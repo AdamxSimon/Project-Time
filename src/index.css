@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+  font-family: Helvetica;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
