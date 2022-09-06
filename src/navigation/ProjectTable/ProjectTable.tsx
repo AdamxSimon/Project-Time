@@ -4,11 +4,15 @@ import { useRef } from "react";
 
 // Components
 
-import Button, { ButtonAnimations } from "../../components/Button/Button";
+import Button from "../../components/Button/Button";
 
 // Types
 
 import { Project, StylesObject } from "../../types";
+
+// Utils
+
+import { combineClassNames } from "../../utils";
 
 // Styles
 
@@ -26,8 +30,10 @@ const ProjectTable = (props: ProjectTableProps): JSX.Element => {
   return (
     <div className={classes.projectTable}>
       {data.length === 0 && (
-        <div className={classes.inputForm}>
-          <div className={classes.inputHeader}>
+        <div className={combineClassNames(classes.inputForm, classes.fadeIn)}>
+          <div
+            className={combineClassNames(classes.inputHeader, classes.fadeUp)}
+          >
             What Would You Like To Work On?
           </div>
           <input
@@ -36,11 +42,7 @@ const ProjectTable = (props: ProjectTableProps): JSX.Element => {
             type="text"
             placeholder="Project Name"
           />
-          <Button
-            text="Add Project"
-            style={styles.button}
-            animation={ButtonAnimations.FadeIn}
-          />
+          <Button text="Add Project" style={styles.button} />
         </div>
       )}
     </div>

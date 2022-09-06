@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 // Components
 
 import App from "./App";
+import ProjectProvider from "./context/ProjectContext";
 
 // Styles
 
@@ -14,4 +15,8 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-root.render(<App />);
+root.render(
+  <ProjectProvider>
+    <App />
+  </ProjectProvider>
+);

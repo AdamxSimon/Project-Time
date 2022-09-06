@@ -50,13 +50,21 @@
   border-bottom: 2px solid black;
 }
 
-@keyframes fade-in {
+.fadeIn {
+  animation: fadeIn 1s linear;
+}
+
+.fadeUp {
+  animation: fadeUp 1s linear;
+}
+
+@keyframes fadeIn {
   0% {
     opacity: 0;
   }
 }
 
-@keyframes fade-up {
+@keyframes fadeUp {
   0% {
     transform: translateY(24px);
   }

@@ -6,13 +6,3 @@
   cursor: pointer;
   user-select: none;
 }
-
-.fadeIn {
-  animation: fade-in 1s linear;
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-}
