@@ -12,12 +12,13 @@ import classes from "./styles.module.css";
 
 interface ButtonProps {
   text: string;
+  onClick: () => void;
   disabled?: boolean;
   style?: React.CSSProperties;
 }
 
 const Button = (props: ButtonProps) => {
-  const { text, disabled, style } = props;
+  const { text, onClick, disabled, style } = props;
 
   const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -34,6 +35,7 @@ const Button = (props: ButtonProps) => {
       onMouseDown={() => setIsActive(true)}
       onMouseUp={() => setIsActive(false)}
       onMouseOut={() => setIsActive(false)}
+      onClick={onClick}
     >
       {text}
     </div>

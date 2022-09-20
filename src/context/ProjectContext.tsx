@@ -8,12 +8,13 @@ import { Project } from "../types";
 
 interface ProjectContextValue {
   projects: Project[];
-  setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  addProject: (project: Project) => void;
+  removeProject: (id: number) => void;
 }
 
 const initialSaveData: string | null = localStorage.getItem("projects");
 
-const ProjectContext: React.Context<ProjectContextValue> =
+export const ProjectContext: React.Context<ProjectContextValue> =
   createContext<ProjectContextValue>({} as ProjectContextValue);
 
 interface ProjectProviderProps {
@@ -25,11 +26,23 @@ const ProjectProvider = ({ children }: ProjectProviderProps) => {
     initialSaveData ? JSON.parse(initialSaveData) : []
   );
 
+  const addProject = (project: Project): void => {
+    setProjects([...projects, project]);
+  };
+
+  const removeProject = (id: number): void => {
+    setProjects(
+      projects.filter((project) => {
+        return project.id !== id;
+      })
+    );
+  };
+
   useEffect(() => {
     localStorage.setItem("projects", JSON.stringify(projects));
   }, [projects]);
 
-  const value = { projects, setProjects };
+  const value = { projects, addProject, removeProject };
 
   return (
     <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>

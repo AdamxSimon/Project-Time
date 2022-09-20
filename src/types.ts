@@ -1,4 +1,5 @@
 export interface Project {
+  id: number;
   name: string;
   weeklyHours: number;
   totalTimeSpent: string;
