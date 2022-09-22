@@ -17,7 +17,7 @@ interface ButtonProps {
   style?: React.CSSProperties;
 }
 
-const Button = (props: ButtonProps) => {
+const Button = (props: ButtonProps): JSX.Element => {
   const { text, onClick, disabled, style } = props;
 
   const [isActive, setIsActive] = useState<boolean>(false);
