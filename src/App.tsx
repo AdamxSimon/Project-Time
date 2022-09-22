@@ -1,5 +1,6 @@
 // Components
 
+import Carousel from "./components/Carousel/Carousel";
 import Toolbar from "./components/Toolbar/Toolbar";
 import ProjectTable from "./navigation/ProjectTable/ProjectTable";
 
@@ -11,9 +12,7 @@ const App = (): JSX.Element => {
   return (
     <div className={classes.app}>
       <Toolbar />
-      <div className={classes.carouselContainer}>
-        <ProjectTable />
-      </div>
+      <Carousel components={[ProjectTable()]} />
     </div>
   );
 };
