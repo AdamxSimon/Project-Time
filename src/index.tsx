@@ -5,6 +5,7 @@ import ReactDOM from "react-dom/client";
 // Components
 
 import App from "./App";
+import CurrencyProvider from "./context/CurrencyContext";
 import ProjectProvider from "./context/ProjectContext";
 
 // Styles
@@ -16,7 +17,9 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  <ProjectProvider>
-    <App />
-  </ProjectProvider>
+  <CurrencyProvider>
+    <ProjectProvider>
+      <App />
+    </ProjectProvider>
+  </CurrencyProvider>
 );
