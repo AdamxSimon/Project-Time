@@ -5,6 +5,7 @@ import { useContext, useRef } from "react";
 // Context
 
 import { ProjectContext } from "../../context/ProjectContext";
+import { CurrencyContext } from "../../context/CurrencyContext";
 
 // Components
 
@@ -61,7 +62,19 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
 const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   const { project, index, removeProject } = props;
 
+  const { removeCurrency, addCurrency } = useContext(CurrencyContext);
+
   const isEven: boolean = index % 2 === 0;
+
+  const giveUp = (): void => {
+    removeProject(project.id);
+    removeCurrency(10);
+  };
+
+  const markComplete = (): void => {
+    removeProject(project.id);
+    addCurrency(10);
+  };
 
   return (
     <div
@@ -71,19 +84,11 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
       <div className={classes.projectNameContainer}>{project.name}</div>
 
       <div className={classes.buttonContainer}>
-        <Button
-          text="Give Up"
-          style={styles.button}
-          onClick={() => {
-            removeProject(project.id);
-          }}
-        />
+        <Button text="Give Up" style={styles.button} onClick={giveUp} />
         <Button
           text="Mark Complete"
           style={styles.button}
-          onClick={() => {
-            removeProject(project.id);
-          }}
+          onClick={markComplete}
         />
       </div>
     </div>
