@@ -1,9 +1,5 @@
 .projectTable {
-  height: 400px;
-  width: 1000px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 0 8px gray;
+  height: 100%;
   overflow: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -64,12 +60,4 @@
 .buttonContainer {
   display: flex;
   gap: 4px;
-}
-
-@media screen and (max-width: 1000px), screen and (max-height: 400px) {
-  .projectTable {
-    height: 100%;
-    width: 100%;
-    border-radius: 0;
-  }
 }
