@@ -18,11 +18,26 @@ const Carousel = (props: CarouselProps): JSX.Element => {
   return (
     <div className={classes.carouselContainer}>
       <div className={classes.carousel}>
-        <div className={classes.directionButton}>{"<"}</div>
+        <div
+          className={classes.directionButton}
+          onClick={() => {
+            if (selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
+          }}
+        >
+          {"<"}
+        </div>
         <div className={classes.componentContainer}>
           {components[selectedIndex]}
         </div>
-        <div className={classes.directionButton}>{">"}</div>
+        <div
+          className={classes.directionButton}
+          onClick={() => {
+            if (selectedIndex < components.length - 1)
+              setSelectedIndex(selectedIndex + 1);
+          }}
+        >
+          {">"}
+        </div>
       </div>
     </div>
   );
