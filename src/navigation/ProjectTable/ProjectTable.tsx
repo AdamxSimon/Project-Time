@@ -1,6 +1,6 @@
 // React
 
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 
 // Context
 
@@ -14,6 +14,10 @@ import Button from "../../components/Button/Button";
 // Types
 
 import { Project, StylesObject } from "../../types";
+
+// Utils
+
+import { isEven } from "../../utils";
 
 // Styles
 
@@ -32,6 +36,8 @@ interface ProjectItemProps {
 const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
   const { addProject } = props;
 
+  const { projects } = useContext(ProjectContext);
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
@@ -48,7 +54,7 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
         style={styles.button}
         onClick={() => {
           addProject({
-            id: 1,
+            id: projects.length + 1,
             name: inputRef.current?.value || "",
             weeklyHours: 0,
             totalTimeSpent: "0",
@@ -64,8 +70,6 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
 
-  const isEven: boolean = index % 2 === 0;
-
   const giveUp = (): void => {
     removeProject(project.id);
     removeCurrency(10);
@@ -79,9 +83,11 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   return (
     <div
       className={classes.projectItem}
-      style={{ backgroundColor: isEven ? "lightgray" : "white" }}
+      style={{ backgroundColor: isEven(index) ? "lightgray" : "white" }}
     >
-      <div className={classes.projectNameContainer}>{project.name}</div>
+      <div className={classes.projectNameContainer}>
+        {project.name || "Project"}
+      </div>
 
       <div className={classes.buttonContainer}>
         <Button text="Give Up" style={styles.button} onClick={giveUp} />
@@ -98,20 +104,52 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 const ProjectTable = (): JSX.Element => {
   const { projects, addProject, removeProject } = useContext(ProjectContext);
 
+  const [isAddingProject, setIsAddingProject] = useState<boolean>(
+    projects.length === 0
+  );
+
+  const addProjectHandler = (project: Project) => {
+    addProject(project);
+    setIsAddingProject(false);
+  };
+
+  const removeProjectHandler = (id: number) => {
+    removeProject(id);
+    if (projects.length === 1) setIsAddingProject(true);
+  };
+
   return (
     <div className={classes.projectTable}>
-      {projects.length === 0 && <ProjectInputForm addProject={addProject} />}
+      {isAddingProject && <ProjectInputForm addProject={addProjectHandler} />}
 
-      {projects.length > 0 &&
+      {!isAddingProject &&
         projects.map((project, index) => {
           return (
             <ProjectItem
+              key={project.id}
               project={project}
               index={index}
-              removeProject={removeProject}
+              removeProject={removeProjectHandler}
             />
           );
         })}
+
+      {!isAddingProject && (
+        <div
+          className={classes.addProjectRow}
+          style={{
+            backgroundColor: isEven(projects.length) ? "lightgray" : "white",
+          }}
+        >
+          <Button
+            text={"Add Project"}
+            onClick={() => {
+              setIsAddingProject(true);
+            }}
+            style={styles.button}
+          ></Button>
+        </div>
+      )}
     </div>
   );
 };

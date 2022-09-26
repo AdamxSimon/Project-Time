@@ -1,7 +1,7 @@
 .toolbar {
-  height: 40px;
+  min-height: 40px;
   width: 100%;
-  background-color: lightgray;
+  background-color: white;
   box-shadow: 0 0 8px gray;
   display: flex;
   justify-content: center;

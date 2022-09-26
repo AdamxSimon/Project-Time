@@ -16,12 +16,14 @@ const Carousel = (props: CarouselProps): JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   return (
-    <div className={classes.carousel}>
-      <div className={classes.directionButton}>{"<"}</div>
-      <div className={classes.componentContainer}>
-        {components[selectedIndex]}
+    <div className={classes.carouselContainer}>
+      <div className={classes.carousel}>
+        <div className={classes.directionButton}>{"<"}</div>
+        <div className={classes.componentContainer}>
+          {components[selectedIndex]}
+        </div>
+        <div className={classes.directionButton}>{">"}</div>
       </div>
-      <div className={classes.directionButton}>{">"}</div>
     </div>
   );
 };
