@@ -1,18 +1,18 @@
 // React
 
-import { useState, useEffect } from "react";
+import { useState, useContext, useMemo } from "react";
 
 // Components
 
 import Button from "../../components/Button/Button";
+import { TimerContext } from "../../context/TimerContext";
 
 // Styles
 
 import classes from "./styles.module.css";
 
-const ProjectTimer = (): JSX.Element => {
-  const [timerMinutes, setTimerMinutes] = useState<string>("00");
-  const [timerSeconds, setTimerSeconds] = useState<string>("00");
+const ProjectTimerForm = (): JSX.Element => {
+  const { startTimer } = useContext(TimerContext);
 
   const [activeMinutes, setActiveMinutes] = useState<number>(20);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
@@ -22,12 +22,12 @@ const ProjectTimer = (): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>,
     setState: React.Dispatch<React.SetStateAction<number>>
   ) => {
-    let result: string = event.target.value;
+    const result: string = event.target.value;
     setState(+result);
   };
 
   return (
-    <div className={classes.projectTimer}>
+    <>
       <div className={classes.header}>{"Set Timer (Minutes)"}</div>
       <div className={classes.settings}>
         <div className={classes.inputGroup}>
@@ -60,14 +60,34 @@ const ProjectTimer = (): JSX.Element => {
       </div>
       <Button
         text={"Start Timer"}
-        onClick={() => {}}
+        onClick={startTimer}
         style={{ backgroundColor: "lightgreen" }}
         disabled={!activeMinutes || !cycles}
       />
-
-      <div>{`${timerMinutes} : ${timerSeconds}`}</div>
-    </div>
+    </>
   );
+};
+
+const ProjectTimer = (): JSX.Element => {
+  const { isActive, seconds } = useContext(TimerContext);
+
+  const timer = useMemo<string>(() => {
+    return seconds.toString();
+  }, [seconds]);
+
+  if (!isActive) {
+    return (
+      <div className={classes.projectTimer}>
+        <ProjectTimerForm />
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.projectTimer}>
+        <div className={classes.timer}>{timer}</div>
+      </div>
+    );
+  }
 };
 
 export default ProjectTimer;
