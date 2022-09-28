@@ -4,8 +4,8 @@ import { createContext, useRef, useState } from "react";
 
 interface TimerContextValue {
   isActive: boolean;
-  seconds: number;
-  startTimer: () => void;
+  timer: string;
+  startTimer: (minutes: number) => void;
   stopTimer: () => void;
 }
 
@@ -18,27 +18,35 @@ interface TimerProviderProps {
 
 const TimerProvider = ({ children }: TimerProviderProps) => {
   const [isActive, setIsActive] = useState<boolean>(false);
-  const [seconds, setSeconds] = useState<number>(0);
+  const [timer, setTimer] = useState<string>("00:00");
 
   const startTimeRef = useRef<Date>({} as Date);
   const intervalRef = useRef({} as NodeJS.Timer);
 
-  const startTimer = (): void => {
+  const startTimer = (minutes: number): void => {
     setIsActive(true);
+    if (!isActive) setTimer(`${minutes}:00`);
     startTimeRef.current = new Date();
+
     const interval = setInterval(() => {
-      setSeconds(new Date().getSeconds() - startTimeRef.current.getSeconds());
+      const differenceInSeconds: number =
+        new Date().getSeconds() - startTimeRef.current.getSeconds();
+      const timeLeftInSeconds: number = minutes * 60 - differenceInSeconds;
+      const timerMinutes = Math.floor(timeLeftInSeconds / 60);
+      const timerSeconds = timeLeftInSeconds - timerMinutes * 60;
+      setTimer(`${timerMinutes}:${timerSeconds}`);
     }, 1000);
+
     intervalRef.current = interval;
   };
 
   const stopTimer = (): void => {
     setIsActive(false);
     clearInterval(intervalRef.current);
-    setSeconds(0);
+    setTimer("00:00");
   };
 
-  const value = { isActive, seconds, startTimer, stopTimer };
+  const value = { isActive, timer, startTimer, stopTimer };
 
   return (
     <TimerContext.Provider value={value}>{children}</TimerContext.Provider>

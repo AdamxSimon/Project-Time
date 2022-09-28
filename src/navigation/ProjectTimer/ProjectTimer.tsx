@@ -1,6 +1,6 @@
 // React
 
-import { useState, useContext, useMemo } from "react";
+import { useState, useContext } from "react";
 
 // Components
 
@@ -60,7 +60,7 @@ const ProjectTimerForm = (): JSX.Element => {
       </div>
       <Button
         text={"Start Timer"}
-        onClick={startTimer}
+        onClick={() => startTimer(activeMinutes)}
         style={{ backgroundColor: "lightgreen" }}
         disabled={!activeMinutes || !cycles}
       />
@@ -69,11 +69,7 @@ const ProjectTimerForm = (): JSX.Element => {
 };
 
 const ProjectTimer = (): JSX.Element => {
-  const { isActive, seconds } = useContext(TimerContext);
-
-  const timer = useMemo<string>(() => {
-    return seconds.toString();
-  }, [seconds]);
+  const { isActive, timer, stopTimer } = useContext(TimerContext);
 
   if (!isActive) {
     return (
@@ -85,6 +81,11 @@ const ProjectTimer = (): JSX.Element => {
     return (
       <div className={classes.projectTimer}>
         <div className={classes.timer}>{timer}</div>
+        <Button
+          text={"Reset Timer"}
+          onClick={stopTimer}
+          style={{ backgroundColor: "lightgreen" }}
+        ></Button>
       </div>
     );
   }
