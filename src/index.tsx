@@ -7,6 +7,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import CurrencyProvider from "./context/CurrencyContext";
 import ProjectProvider from "./context/ProjectContext";
+import TimerProvider from "./context/TimerContext";
 
 // Styles
 
@@ -19,7 +20,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <CurrencyProvider>
     <ProjectProvider>
-      <App />
+      <TimerProvider>
+        <App />
+      </TimerProvider>
     </ProjectProvider>
   </CurrencyProvider>
 );
