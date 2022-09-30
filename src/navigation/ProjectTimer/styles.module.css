@@ -50,6 +50,10 @@
   -moz-appearance: textfield;
 }
 
+.stage {
+  font-size: 48px;
+}
+
 .timer {
   font-size: 48px;
 }

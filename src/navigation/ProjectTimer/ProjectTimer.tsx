@@ -12,7 +12,7 @@ import { TimerContext } from "../../context/TimerContext";
 import classes from "./styles.module.css";
 
 const ProjectTimerForm = (): JSX.Element => {
-  const { startTimer } = useContext(TimerContext);
+  const { startTimerSession } = useContext(TimerContext);
 
   const [activeMinutes, setActiveMinutes] = useState<number>(20);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
@@ -60,7 +60,7 @@ const ProjectTimerForm = (): JSX.Element => {
       </div>
       <Button
         text={"Start Timer"}
-        onClick={() => startTimer(activeMinutes)}
+        onClick={() => startTimerSession(activeMinutes, breakMinutes, cycles)}
         style={{ backgroundColor: "lightgreen" }}
         disabled={!activeMinutes || !cycles}
       />
@@ -69,7 +69,8 @@ const ProjectTimerForm = (): JSX.Element => {
 };
 
 const ProjectTimer = (): JSX.Element => {
-  const { isActive, timer, stopTimer } = useContext(TimerContext);
+  const { isActive, timer, currentStage, stopTimerSession } =
+    useContext(TimerContext);
 
   if (!isActive) {
     return (
@@ -80,10 +81,11 @@ const ProjectTimer = (): JSX.Element => {
   } else {
     return (
       <div className={classes.projectTimer}>
+        <div className={classes.stage}>{currentStage}</div>
         <div className={classes.timer}>{timer}</div>
         <Button
           text={"Reset Timer"}
-          onClick={stopTimer}
+          onClick={stopTimerSession}
           style={{ backgroundColor: "lightgreen" }}
         ></Button>
       </div>
