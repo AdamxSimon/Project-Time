@@ -29,8 +29,12 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     startTimeRef.current = new Date();
 
     const interval = setInterval(() => {
-      const differenceInSeconds: number =
-        new Date().getSeconds() - startTimeRef.current.getSeconds();
+      const currentTime: number = new Date().getTime();
+      const startTime: number = startTimeRef.current.getTime();
+      const differenceInSeconds: number = Math.round(
+        Math.abs(currentTime - startTime) / 1000
+      );
+
       const timeLeftInSeconds: number = minutes * 60 - differenceInSeconds;
       const timerMinutes = Math.floor(timeLeftInSeconds / 60);
       const timerSeconds = timeLeftInSeconds - timerMinutes * 60;
@@ -44,6 +48,7 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     setIsActive(false);
     clearInterval(intervalRef.current);
     setTimer("00:00");
+    startTimeRef.current = {} as Date;
   };
 
   const value = { isActive, timer, startTimer, stopTimer };
