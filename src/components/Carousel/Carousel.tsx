@@ -7,7 +7,7 @@ import { useState } from "react";
 import classes from "./styles.module.css";
 
 interface CarouselProps {
-  components: JSX.Element[];
+  components: React.ReactElement[];
 }
 
 const Carousel = (props: CarouselProps): JSX.Element => {
