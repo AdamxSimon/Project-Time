@@ -21,7 +21,7 @@ interface ProjectProviderProps {
   children: JSX.Element;
 }
 
-const ProjectProvider = ({ children }: ProjectProviderProps) => {
+const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
   const [projects, setProjects] = useState<Project[]>(
     initialSaveData ? JSON.parse(initialSaveData) : []
   );
@@ -42,7 +42,7 @@ const ProjectProvider = ({ children }: ProjectProviderProps) => {
     localStorage.setItem("projects", JSON.stringify(projects));
   }, [projects]);
 
-  const value = { projects, addProject, removeProject };
+  const value: ProjectContextValue = { projects, addProject, removeProject };
 
   return (
     <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>

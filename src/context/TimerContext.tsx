@@ -26,7 +26,7 @@ interface TimerProviderProps {
   children: JSX.Element;
 }
 
-const TimerProvider = ({ children }: TimerProviderProps) => {
+const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [timer, setTimer] = useState<string | null>(null);
   const [currentStage, setCurrentStage] = useState<TimerStage | null>(null);
@@ -98,7 +98,7 @@ const TimerProvider = ({ children }: TimerProviderProps) => {
     stagesRef.current[stagesStepRef.current]();
   };
 
-  const value = {
+  const value: TimerContextValue = {
     isActive,
     timer,
     currentStage,

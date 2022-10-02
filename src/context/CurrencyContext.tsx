@@ -17,7 +17,7 @@ interface CurrencyProviderProps {
   children: JSX.Element;
 }
 
-const CurrencyProvider = ({ children }: CurrencyProviderProps) => {
+const CurrencyProvider = ({ children }: CurrencyProviderProps): JSX.Element => {
   const [currency, setCurrency] = useState<number>(
     initialSaveData ? +initialSaveData : 0
   );
@@ -35,7 +35,7 @@ const CurrencyProvider = ({ children }: CurrencyProviderProps) => {
     localStorage.setItem("currency", currency.toString());
   }, [currency]);
 
-  const value = { currency, addCurrency, removeCurrency };
+  const value: CurrencyContextValue = { currency, addCurrency, removeCurrency };
 
   return (
     <CurrencyContext.Provider value={value}>

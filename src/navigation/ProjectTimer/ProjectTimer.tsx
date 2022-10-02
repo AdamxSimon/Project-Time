@@ -2,10 +2,13 @@
 
 import { useState, useContext } from "react";
 
+// Context
+
+import { TimerContext } from "../../context/TimerContext";
+
 // Components
 
 import Button from "../../components/Button/Button";
-import { TimerContext } from "../../context/TimerContext";
 
 // Styles
 
@@ -21,7 +24,7 @@ const ProjectTimerForm = (): JSX.Element => {
   const inputHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
     setState: React.Dispatch<React.SetStateAction<number>>
-  ) => {
+  ): void => {
     const result: string = event.target.value;
     setState(+result);
   };
