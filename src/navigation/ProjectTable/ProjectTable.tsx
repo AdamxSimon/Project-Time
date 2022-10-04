@@ -15,10 +15,6 @@ import Button from "../../components/Button/Button";
 
 import { Project, StylesObject } from "../../types";
 
-// Utils
-
-import { isEven } from "../../utils";
-
 // Styles
 
 import classes from "./styles.module.css";
@@ -29,7 +25,6 @@ interface ProjectInputFormProps {
 
 interface ProjectItemProps {
   project: Project;
-  index: number;
   removeProject: (id: number) => void;
 }
 
@@ -51,13 +46,12 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
       />
       <Button
         text="Add Project"
-        style={styles.button}
+        style={{ backgroundColor: "lightgreen" }}
         onClick={() => {
           addProject({
             id: projects.length + 1,
             name: inputRef.current?.value || "",
-            weeklyHours: 0,
-            totalTimeSpent: "0",
+            totalMinutesSpent: 0,
           });
         }}
       />
@@ -66,7 +60,7 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
 };
 
 const ProjectItem = (props: ProjectItemProps): JSX.Element => {
-  const { project, index, removeProject } = props;
+  const { project, removeProject } = props;
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
 
@@ -81,19 +75,20 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   };
 
   return (
-    <div
-      className={classes.projectItem}
-      style={{ backgroundColor: isEven(index) ? "lightgray" : "white" }}
-    >
-      <div className={classes.projectNameContainer}>
-        {project.name || "Project"}
+    <div className={classes.projectItem}>
+      <div className={classes.infoContainer}>
+        <div className={classes.projectName}>{project.name || "Project"}</div>
+        <div>{`${project.totalMinutesSpent} Minutes Spent`}</div>
       </div>
-
       <div className={classes.buttonContainer}>
-        <Button text="Give Up" style={styles.button} onClick={giveUp} />
+        <Button
+          text="Give Up"
+          style={styles.projectItemButton}
+          onClick={giveUp}
+        />
         <Button
           text="Mark Complete"
-          style={styles.button}
+          style={styles.projectItemButton}
           onClick={markComplete}
         />
       </div>
@@ -118,44 +113,43 @@ const ProjectTable = (): JSX.Element => {
     if (projects.length === 1) setIsAddingProject(true);
   };
 
-  return (
-    <div className={classes.projectTable}>
-      {isAddingProject && <ProjectInputForm addProject={addProjectHandler} />}
-
-      {!isAddingProject &&
-        projects.map((project, index) => {
-          return (
-            <ProjectItem
-              key={project.id}
-              project={project}
-              index={index}
-              removeProject={removeProjectHandler}
-            />
-          );
-        })}
-
-      {!isAddingProject && (
-        <div
-          className={classes.addProjectRow}
-          style={{
-            backgroundColor: isEven(projects.length) ? "lightgray" : "white",
-          }}
-        >
-          <Button
-            text={"Add Project"}
-            onClick={() => {
-              setIsAddingProject(true);
-            }}
-            style={styles.button}
-          ></Button>
+  if (isAddingProject) {
+    return (
+      <div className={classes.projectTable}>
+        <ProjectInputForm addProject={addProjectHandler} />
+      </div>
+    );
+  } else {
+    return (
+      <>
+        <div className={classes.projectTable}>
+          {projects.map((project) => {
+            return (
+              <ProjectItem
+                key={project.id}
+                project={project}
+                removeProject={removeProjectHandler}
+              />
+            );
+          })}
         </div>
-      )}
-    </div>
-  );
+        <div
+          onClick={() => {
+            setIsAddingProject(true);
+          }}
+          className={classes.addProjectButton}
+        >
+          +
+        </div>
+      </>
+    );
+  }
 };
 
 const styles: StylesObject = {
-  button: { backgroundColor: "lightgreen" },
+  projectItemButton: {
+    backgroundColor: "lightgreen",
+  },
 };
 
 export default ProjectTable;
