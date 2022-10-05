@@ -19,6 +19,7 @@ interface ProjectContextValue {
   completeProject: (id: number) => void;
   isAddingProject: boolean;
   setIsAddingProject: React.Dispatch<React.SetStateAction<boolean>>;
+  addProjectSeconds: (projectToUpdate: Project | null, seconds: number) => void;
 }
 
 const initialSaveData: string | null = localStorage.getItem("projects");
@@ -65,6 +66,25 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     );
   };
 
+  const addProjectSeconds = (
+    projectToUpdate: Project | null,
+    seconds: number
+  ) => {
+    if (projectToUpdate) {
+      setProjects((projects) =>
+        projects.map((project) => {
+          if (project.id === projectToUpdate.id) {
+            return {
+              ...project,
+              totalSecondsSpent: (project.totalSecondsSpent += seconds),
+            };
+          }
+          return project;
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem("projects", JSON.stringify(projects));
 
@@ -84,6 +104,7 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     completeProject,
     isAddingProject,
     setIsAddingProject,
+    addProjectSeconds,
   };
 
   return (

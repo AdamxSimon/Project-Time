@@ -72,6 +72,26 @@
   font-weight: bold;
 }
 
+.timeInfo {
+  height: 24px;
+  display: flex;
+}
+
+.icon {
+  margin-right: 4px;
+}
+
+.totalTime {
+  display: flex;
+  align-items: center;
+}
+
+.timer {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+}
+
 .buttonContainer {
   display: flex;
   gap: 4px;

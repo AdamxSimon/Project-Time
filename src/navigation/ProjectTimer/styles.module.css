@@ -1,5 +1,6 @@
 .projectTimer {
   height: 100%;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,7 +9,10 @@
 }
 
 .header {
-  font-size: 32px;
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid black;
+  font-size: 24px;
   font-weight: bold;
   text-align: center;
 }
@@ -56,4 +60,69 @@
 
 .timer {
   font-size: 48px;
+}
+
+.message {
+  background-color: rgba(255, 0, 0, 0.4);
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px black;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.projectSelector {
+  height: 40px;
+  width: 240px;
+  border: 1px solid black;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.projectName {
+  flex: 1;
+  text-align: center;
+}
+
+.arrow {
+  position: absolute;
+  right: 8px;
+}
+
+.projectList {
+  height: 140px;
+  width: 240px;
+  background-color: white;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 30px;
+  left: -1px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.projectList::-webkit-scrollbar {
+  display: none;
+}
+
+.projectItem {
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+}
+
+.projectItem:hover {
+  background-color: lavender;
 }

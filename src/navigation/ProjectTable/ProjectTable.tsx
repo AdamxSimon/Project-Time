@@ -6,10 +6,16 @@ import { useContext, useRef, useState, useMemo } from "react";
 
 import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 import { CurrencyContext } from "../../context/CurrencyContext";
+import { TimerContext } from "../../context/TimerContext";
 
 // Components
 
 import Button from "../../components/Button/Button";
+
+// Assets
+
+import sigma from "../../assets/sigma.png";
+import stopwatch from "../../assets/stopwatch.png";
 
 // Types
 
@@ -58,6 +64,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
   const { completeProject, abandonProject } = useContext(ProjectContext);
+  const { timedProject, timer } = useContext(TimerContext);
 
   const giveUp = (): void => {
     abandonProject(project.id);
@@ -69,11 +76,48 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
     addCurrency(10);
   };
 
+  const isProjectActivelyTimed = useMemo(() => {
+    return timedProject?.id === project.id;
+  }, [project.id, timedProject?.id]);
+
+  const totalTime: string = useMemo(() => {
+    const minutes: number = Math.floor(project.totalSecondsSpent / 60);
+    const seconds: number = project.totalSecondsSpent - minutes * 60;
+
+    const minutesStringConversion: string =
+      minutes < 10 ? `0${minutes}` : minutes.toString();
+    const secondsStringConversion: string =
+      seconds < 10 ? `0${seconds}` : seconds.toString();
+
+    return `${minutesStringConversion}:${secondsStringConversion}`;
+  }, [project.totalSecondsSpent]);
+
   return (
     <div className={classes.projectItem}>
       <div className={classes.infoContainer}>
         <div className={classes.projectName}>{project.name}</div>
-        <div>{`${project.totalSecondsSpent} Seconds Spent`}</div>
+        <div className={classes.timeInfo}>
+          <div className={classes.totalTime}>
+            <img
+              height={"100%"}
+              className={classes.icon}
+              src={sigma}
+              alt={"Sigma"}
+            />
+            <div>{totalTime}</div>
+          </div>
+          {isProjectActivelyTimed && (
+            <div className={classes.timer}>
+              <img
+                height={"100%"}
+                className={classes.icon}
+                src={stopwatch}
+                alt={"Stopwatch"}
+              />
+              <div>{timer}</div>
+            </div>
+          )}
+        </div>
       </div>
       <div className={classes.buttonContainer}>
         <Button
