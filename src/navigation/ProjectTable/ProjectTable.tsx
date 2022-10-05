@@ -1,10 +1,10 @@
 // React
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useRef, useState, useMemo } from "react";
 
 // Context
 
-import { ProjectContext } from "../../context/ProjectContext";
+import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 import { CurrencyContext } from "../../context/CurrencyContext";
 
 // Components
@@ -19,19 +19,12 @@ import { Project, StylesObject } from "../../types";
 
 import classes from "./styles.module.css";
 
-interface ProjectInputFormProps {
-  addProject: (project: Project) => void;
-}
-
 interface ProjectItemProps {
   project: Project;
-  removeProject: (id: number) => void;
 }
 
-const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
-  const { addProject } = props;
-
-  const { projects } = useContext(ProjectContext);
+const ProjectInputForm = (): JSX.Element => {
+  const { projects, addProject } = useContext(ProjectContext);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -50,8 +43,9 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
         onClick={() => {
           addProject({
             id: projects.length + 1,
-            name: inputRef.current?.value || "",
-            totalMinutesSpent: 0,
+            name: inputRef.current?.value || `Project #${projects.length + 1}`,
+            status: ProjectStatus.Active,
+            totalSecondsSpent: 0,
           });
         }}
       />
@@ -60,25 +54,26 @@ const ProjectInputForm = (props: ProjectInputFormProps): JSX.Element => {
 };
 
 const ProjectItem = (props: ProjectItemProps): JSX.Element => {
-  const { project, removeProject } = props;
+  const { project } = props;
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
+  const { completeProject, abandonProject } = useContext(ProjectContext);
 
   const giveUp = (): void => {
-    removeProject(project.id);
+    abandonProject(project.id);
     removeCurrency(10);
   };
 
   const markComplete = (): void => {
-    removeProject(project.id);
+    completeProject(project.id);
     addCurrency(10);
   };
 
   return (
     <div className={classes.projectItem}>
       <div className={classes.infoContainer}>
-        <div className={classes.projectName}>{project.name || "Project"}</div>
-        <div>{`${project.totalMinutesSpent} Minutes Spent`}</div>
+        <div className={classes.projectName}>{project.name}</div>
+        <div>{`${project.totalSecondsSpent} Seconds Spent`}</div>
       </div>
       <div className={classes.buttonContainer}>
         <Button
@@ -97,40 +92,31 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 };
 
 const ProjectTable = (): JSX.Element => {
-  const { projects, addProject, removeProject } = useContext(ProjectContext);
+  const { projects, isAddingProject, setIsAddingProject } =
+    useContext(ProjectContext);
 
-  const [isAddingProject, setIsAddingProject] = useState<boolean>(
-    projects.length === 0
-  );
+  const [activeFilters, setActiveFilters] = useState<ProjectStatus[]>([
+    ProjectStatus.Active,
+  ]);
 
-  const addProjectHandler = (project: Project) => {
-    addProject(project);
-    setIsAddingProject(false);
-  };
-
-  const removeProjectHandler = (id: number) => {
-    removeProject(id);
-    if (projects.length === 1) setIsAddingProject(true);
-  };
+  const renderedProjects = useMemo(() => {
+    return projects.filter((project) => {
+      return activeFilters.includes(project.status);
+    });
+  }, [projects, activeFilters]);
 
   if (isAddingProject) {
     return (
       <div className={classes.projectTable}>
-        <ProjectInputForm addProject={addProjectHandler} />
+        <ProjectInputForm />
       </div>
     );
   } else {
     return (
       <>
         <div className={classes.projectTable}>
-          {projects.map((project) => {
-            return (
-              <ProjectItem
-                key={project.id}
-                project={project}
-                removeProject={removeProjectHandler}
-              />
-            );
+          {renderedProjects.map((project) => {
+            return <ProjectItem key={project.id} project={project} />;
           })}
         </div>
         <div

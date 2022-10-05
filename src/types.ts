@@ -1,7 +1,12 @@
+// Enums
+
+import { ProjectStatus } from "./context/ProjectContext";
+
 export interface Project {
   id: number;
   name: string;
-  totalMinutesSpent: number;
+  status: ProjectStatus;
+  totalSecondsSpent: number;
 }
 
 export interface StylesObject {
