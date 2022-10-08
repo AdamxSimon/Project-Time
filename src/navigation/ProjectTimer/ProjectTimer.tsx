@@ -147,7 +147,7 @@ const ProjectTimerForm = (): JSX.Element => {
             activeMinutes,
             breakMinutes,
             cycles,
-            timedProjectRef.current
+            timedProjectRef.current as Project
           )
         }
         style={{ backgroundColor: "lightgreen" }}

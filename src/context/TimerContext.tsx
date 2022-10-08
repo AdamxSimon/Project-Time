@@ -6,6 +6,10 @@ import { createContext, useRef, useState, useContext, useEffect } from "react";
 
 import { ProjectContext, ProjectStatus } from "./ProjectContext";
 
+// Utils
+
+import { convertSecondsToDuration } from "../utils";
+
 // Types
 
 import { Project } from "../types";
@@ -23,7 +27,7 @@ interface TimerContextValue {
     activeMinutes: number,
     breakMinutes: number,
     cycles: number,
-    project: Project | null
+    project: Project
   ) => void;
   stopTimerSession: () => void;
   timedProject: Project | null;
@@ -46,41 +50,38 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const stagesStepRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const intervalRef = useRef({} as NodeJS.Timer);
-  const lastTickRef = useRef<number | null>(null);
+  const initialProjectTimeRef = useRef<number | null>(null);
 
-  const { addProjectSeconds, projects } = useContext(ProjectContext);
+  const { projects, updateProjectSeconds } = useContext(ProjectContext);
 
   const startTimer = (
     minutes: number,
     stage: TimerStage,
-    project: Project | null
+    project: Project
   ): void => {
     setCurrentStage(stage);
     setTimer(`${minutes < 10 ? `0${minutes}` : minutes.toString()}:00`);
     startTimeRef.current = Date.now();
-    lastTickRef.current = startTimeRef.current;
+    initialProjectTimeRef.current = project.totalSecondsSpent;
     clearInterval(intervalRef.current);
 
     const interval: NodeJS.Timer = setInterval(() => {
       const currentTime: number = Date.now();
-      const secondsSinceLastTick: number = lastTickRef.current
-        ? Math.round(Math.abs(currentTime - lastTickRef.current) / 1000)
-        : 0;
       const startTime: number = startTimeRef.current as number;
       const differenceInSeconds: number = Math.round(
         Math.abs(currentTime - startTime) / 1000
       );
 
       const timeLeftInSeconds: number = minutes * 60 - differenceInSeconds;
-      const timerMinutes: number = Math.floor(timeLeftInSeconds / 60);
-      const timerSeconds: number = timeLeftInSeconds - timerMinutes * 60;
+      const timer = convertSecondsToDuration(timeLeftInSeconds);
+      setTimer(timer);
 
-      const minutesStringConversion: string =
-        timerMinutes < 10 ? `0${timerMinutes}` : timerMinutes.toString();
-      const secondsStringConversion: string =
-        timerSeconds < 10 ? `0${timerSeconds}` : timerSeconds.toString();
-
-      setTimer(`${minutesStringConversion}:${secondsStringConversion}`);
+      if (stage === TimerStage.Active && timeLeftInSeconds >= 0) {
+        updateProjectSeconds(
+          project,
+          (initialProjectTimeRef.current as number) + differenceInSeconds
+        );
+      }
 
       if (timeLeftInSeconds < 0 && stagesStepRef.current !== null) {
         stagesStepRef.current += 1;
@@ -90,12 +91,6 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
           stopTimerSession();
         }
       }
-
-      if (secondsSinceLastTick && stage === TimerStage.Active) {
-        addProjectSeconds(project, secondsSinceLastTick);
-      }
-
-      lastTickRef.current = currentTime;
     }, 1000);
 
     intervalRef.current = interval;
@@ -108,15 +103,16 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     setTimer(null);
     clearInterval(intervalRef.current);
     startTimeRef.current = null;
+    stagesRef.current = [];
     stagesStepRef.current = null;
-    lastTickRef.current = null;
+    initialProjectTimeRef.current = null;
   };
 
   const startTimerSession = (
     activeMinutes: number,
     breakMinutes: number,
     cycles: number,
-    project: Project | null
+    project: Project
   ): void => {
     setIsActive(true);
     setTimedProject(project);
