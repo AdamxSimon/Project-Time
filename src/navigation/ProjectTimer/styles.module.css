@@ -18,30 +18,35 @@
 }
 
 .settings {
-  width: 100%;
+  width: 360px;
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
   align-items: center;
 }
 
 .inputGroup {
+  height: 32px;
+  width: 100%;
+  border-bottom: 1px solid black;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 4px;
 }
 
 .label {
   font-weight: bold;
 }
 
+.totalTime,
 .input {
-  height: 40px;
-  width: 40px;
   padding: 0;
   outline: 0;
-  text-align: center;
+  border: none;
+  flex: 1;
+  text-align: right;
+}
+
+.input:hover {
+  font-weight: bold;
 }
 
 .input::-webkit-outer-spin-button,
@@ -52,6 +57,13 @@
 
 .input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.totalTimeGroup {
+  height: 32px;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .stage {
@@ -91,23 +103,21 @@
 .arrow {
   position: absolute;
   right: 8px;
+  user-select: none;
 }
 
 .projectList {
   height: 140px;
-  width: 240px;
   background-color: white;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border: 1px solid black;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   position: absolute;
-  top: 30px;
+  top: 38px;
   left: -1px;
+  right: -1px;
   overflow: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;

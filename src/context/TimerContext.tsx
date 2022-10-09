@@ -119,7 +119,9 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     const stages: { (): void }[] = [];
     for (let counter = 0; counter < cycles; counter++) {
       stages.push(() => startTimer(activeMinutes, TimerStage.Active, project));
-      stages.push(() => startTimer(breakMinutes, TimerStage.Break, project));
+      if (!(counter === cycles - 1)) {
+        stages.push(() => startTimer(breakMinutes, TimerStage.Break, project));
+      }
     }
     stagesRef.current = stages;
     stagesStepRef.current = 0;

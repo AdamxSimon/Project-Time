@@ -55,10 +55,21 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
   return (
     <div
       className={classes.projectSelector}
+      style={{
+        borderBottomLeftRadius: shouldShowList ? 0 : 8,
+        borderBottomRightRadius: shouldShowList ? 0 : 8,
+      }}
       onClick={() => setShouldShowList((shouldShowList) => !shouldShowList)}
     >
       <div className={classes.projectName}>{selectedProject?.name ?? ""}</div>
-      <div className={classes.arrow}>▼</div>
+      <div
+        className={classes.arrow}
+        style={{
+          transform: shouldShowList ? "rotate(180deg)" : "rotate(0deg)",
+        }}
+      >
+        ▼
+      </div>
 
       {shouldShowList && (
         <div className={classes.projectList}>
@@ -88,9 +99,9 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
 const ProjectTimerForm = (): JSX.Element => {
   const { startTimerSession } = useContext(TimerContext);
 
-  const [activeMinutes, setActiveMinutes] = useState<number>(20);
+  const [activeMinutes, setActiveMinutes] = useState<number>(25);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
-  const [cycles, setCycles] = useState<number>(1);
+  const [cycles, setCycles] = useState<number>(2);
 
   const timedProjectRef = useRef<Project | null>(null);
 
@@ -103,41 +114,69 @@ const ProjectTimerForm = (): JSX.Element => {
     setState: React.Dispatch<React.SetStateAction<number>>
   ): void => {
     const result: string = event.target.value;
-    setState(+result);
+    const trimmedResult: number = parseInt(result, 10);
+    setState(trimmedResult || 1);
+    if (!trimmedResult) event.target.select();
   };
+
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>): void => {
+    event.target.select();
+  };
+
+  const totalTimeInMinutes: number =
+    (activeMinutes + breakMinutes) * cycles - breakMinutes;
+
+  useEffect(() => {
+    if (cycles === 1) {
+      setBreakMinutes(0);
+    } else if (cycles > 1 && breakMinutes === 0) {
+      setBreakMinutes(5);
+    }
+  }, [breakMinutes, cycles]);
 
   return (
     <>
       <div className={classes.header}>{"Choose A Project"}</div>
       <ProjectSelector selectProject={selectProjectHandler} />
-      <div className={classes.header}>{"Set Timer (Minutes)"}</div>
+      <div className={classes.header}>{"Set Timer"}</div>
       <div className={classes.settings}>
         <div className={classes.inputGroup}>
-          <div className={classes.label}>Active</div>
+          <div className={classes.label}>Active Minutes</div>
           <input
             type="number"
             className={classes.input}
-            value={activeMinutes || ""}
+            value={activeMinutes}
             onChange={(event) => inputHandler(event, setActiveMinutes)}
+            onFocus={handleFocus}
           />
         </div>
         <div className={classes.inputGroup}>
-          <div className={classes.label}>Break</div>
+          <div className={classes.label}>Break Minutes</div>
           <input
             type="number"
             className={classes.input}
-            value={breakMinutes || ""}
-            onChange={(event) => inputHandler(event, setBreakMinutes)}
+            value={breakMinutes}
+            onChange={
+              cycles > 1
+                ? (event) => inputHandler(event, setBreakMinutes)
+                : undefined
+            }
+            onFocus={handleFocus}
           />
         </div>
         <div className={classes.inputGroup}>
-          <div className={classes.label}>Cycles</div>
+          <div className={classes.label}>Number of Cycles</div>
           <input
             type="number"
             className={classes.input}
-            value={cycles || ""}
+            value={cycles}
             onChange={(event) => inputHandler(event, setCycles)}
+            onFocus={handleFocus}
           />
+        </div>
+        <div className={classes.totalTimeGroup}>
+          <div className={classes.label}>Total Minutes</div>
+          <div className={classes.totalTime}>{totalTimeInMinutes}</div>
         </div>
       </div>
       <Button
