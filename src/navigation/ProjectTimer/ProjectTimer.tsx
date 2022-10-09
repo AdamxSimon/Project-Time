@@ -4,12 +4,13 @@ import { useState, useContext, useMemo, useEffect, useRef } from "react";
 
 // Context
 
-import { TimerContext } from "../../context/TimerContext";
+import { ReasonTimerStopped, TimerContext } from "../../context/TimerContext";
 import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 
 // Components
 
 import Button from "../../components/Button/Button";
+import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContainer";
 
 // Types
 
@@ -126,6 +127,13 @@ const ProjectTimerForm = (): JSX.Element => {
   const totalTimeInMinutes: number =
     (activeMinutes + breakMinutes) * cycles - breakMinutes;
 
+  const startTimerButton: JSX.Element = (
+    <div className={classes.startProjectTimerButton}>
+      <div>Start Timer</div>
+      <CurrencyContainer amount={totalTimeInMinutes} />
+    </div>
+  );
+
   useEffect(() => {
     if (cycles === 1) {
       setBreakMinutes(0);
@@ -180,7 +188,7 @@ const ProjectTimerForm = (): JSX.Element => {
         </div>
       </div>
       <Button
-        text={"Start Timer"}
+        text={startTimerButton}
         onClick={() =>
           startTimerSession(
             activeMinutes,
@@ -197,7 +205,7 @@ const ProjectTimerForm = (): JSX.Element => {
 };
 
 const ProjectTimer = (): JSX.Element => {
-  const { isActive, timer, currentStage, stopTimerSession } =
+  const { isActive, timer, currentStage, stopTimerSession, timerMinutes } =
     useContext(TimerContext);
   const { projects } = useContext(ProjectContext);
 
@@ -206,6 +214,13 @@ const ProjectTimer = (): JSX.Element => {
       return project.status === ProjectStatus.Active;
     });
   }, [projects]);
+
+  const resetTimerButton: JSX.Element = (
+    <div className={classes.resetTimerButton}>
+      <div>Give Up</div>
+      <CurrencyContainer amount={timerMinutes || 0} />
+    </div>
+  );
 
   if (activeProjects.length === 0) {
     return (
@@ -229,9 +244,9 @@ const ProjectTimer = (): JSX.Element => {
         <div className={classes.stage}>{currentStage}</div>
         <div className={classes.timer}>{timer}</div>
         <Button
-          text={"Reset Timer"}
-          onClick={stopTimerSession}
-          style={{ backgroundColor: "lightgreen" }}
+          text={resetTimerButton}
+          onClick={() => stopTimerSession(ReasonTimerStopped.Canceled)}
+          style={{ backgroundColor: "lightcoral" }}
         ></Button>
       </div>
     );

@@ -48,6 +48,7 @@
   outline: 0;
   border: none;
   flex: 1;
+  font-size: 16px;
   text-align: right;
 }
 
@@ -146,4 +147,18 @@
 
 .projectItem:hover {
   background-color: lavender;
+}
+
+.startProjectTimerButton {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.resetTimerButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }

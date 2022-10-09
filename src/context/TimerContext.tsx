@@ -1,6 +1,13 @@
 // React
 
-import { createContext, useRef, useState, useContext, useEffect } from "react";
+import {
+  createContext,
+  useRef,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 
 // Context
 
@@ -13,10 +20,16 @@ import { convertSecondsToDuration } from "../utils";
 // Types
 
 import { Project } from "../types";
+import { CurrencyContext } from "./CurrencyContext";
 
 enum TimerStage {
   Active = "Active",
   Break = "Break",
+}
+
+export enum ReasonTimerStopped {
+  Canceled,
+  Completed,
 }
 
 interface TimerContextValue {
@@ -29,8 +42,9 @@ interface TimerContextValue {
     cycles: number,
     project: Project
   ) => void;
-  stopTimerSession: () => void;
+  stopTimerSession: (reason: ReasonTimerStopped) => void;
   timedProject: Project | null;
+  timerMinutes: number | null;
 }
 
 export const TimerContext: React.Context<TimerContextValue> =
@@ -45,6 +59,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const [timer, setTimer] = useState<string | null>(null);
   const [currentStage, setCurrentStage] = useState<TimerStage | null>(null);
   const [timedProject, setTimedProject] = useState<Project | null>(null);
+  const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
 
   const stagesRef = useRef<{ (): void }[]>([]);
   const stagesStepRef = useRef<number | null>(null);
@@ -53,6 +68,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const initialProjectTimeRef = useRef<number | null>(null);
 
   const { projects, updateProjectSeconds } = useContext(ProjectContext);
+  const { addCurrency } = useContext(CurrencyContext);
 
   const startTimer = (
     minutes: number,
@@ -88,7 +104,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
         if (stagesStepRef.current <= stagesRef.current.length - 1) {
           stagesRef.current[stagesStepRef.current]();
         } else {
-          stopTimerSession();
+          stopTimerSession(ReasonTimerStopped.Completed);
         }
       }
     }, 1000);
@@ -96,17 +112,26 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     intervalRef.current = interval;
   };
 
-  const stopTimerSession = (): void => {
-    setIsActive(false);
-    setTimedProject(null);
-    setCurrentStage(null);
-    setTimer(null);
-    clearInterval(intervalRef.current);
-    startTimeRef.current = null;
-    stagesRef.current = [];
-    stagesStepRef.current = null;
-    initialProjectTimeRef.current = null;
-  };
+  const stopTimerSession = useCallback(
+    (reason: ReasonTimerStopped): void => {
+      setIsActive(false);
+      setTimedProject(null);
+      setCurrentStage(null);
+      setTimer(null);
+      clearInterval(intervalRef.current);
+      startTimeRef.current = null;
+      stagesRef.current = [];
+      stagesStepRef.current = null;
+      initialProjectTimeRef.current = null;
+
+      if (reason === ReasonTimerStopped.Completed) {
+        addCurrency(timerMinutes || 0);
+      }
+
+      setTimerMinutes(null);
+    },
+    [addCurrency, timerMinutes]
+  );
 
   const startTimerSession = (
     activeMinutes: number,
@@ -116,6 +141,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   ): void => {
     setIsActive(true);
     setTimedProject(project);
+    setTimerMinutes((activeMinutes + breakMinutes) * cycles - breakMinutes);
     const stages: { (): void }[] = [];
     for (let counter = 0; counter < cycles; counter++) {
       stages.push(() => startTimer(activeMinutes, TimerStage.Active, project));
@@ -134,10 +160,10 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
         project.id === timedProject?.id &&
         project.status !== ProjectStatus.Active
       ) {
-        stopTimerSession();
+        stopTimerSession(ReasonTimerStopped.Canceled);
       }
     });
-  }, [projects, timedProject?.id]);
+  }, [projects, stopTimerSession, timedProject?.id]);
 
   const value: TimerContextValue = {
     isActive,
@@ -146,6 +172,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     startTimerSession,
     stopTimerSession,
     timedProject,
+    timerMinutes,
   };
 
   return (

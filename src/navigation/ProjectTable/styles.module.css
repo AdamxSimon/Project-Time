@@ -57,6 +57,14 @@
   align-items: center;
 }
 
+.projectItemButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
 .infoContainer {
   padding-right: 8px;
   flex: 1;

@@ -18,6 +18,10 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 import sigma from "../../assets/sigma.png";
 import stopwatch from "../../assets/stopwatch.png";
 
+// Utils
+
+import { convertSecondsToDuration } from "../../utils";
+
 // Types
 
 import { Project, StylesObject } from "../../types";
@@ -74,6 +78,10 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   const { completeProject, abandonProject } = useContext(ProjectContext);
   const { timedProject, timer } = useContext(TimerContext);
 
+  const completionReward: number = Math.floor(
+    project.totalSecondsSpent / 60 / 2
+  );
+
   const giveUp = (): void => {
     abandonProject(project.id);
     removeCurrency(10);
@@ -81,24 +89,28 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const markComplete = (): void => {
     completeProject(project.id);
-    addCurrency(10);
+    addCurrency(completionReward);
   };
 
   const isProjectActivelyTimed = useMemo(() => {
     return timedProject?.id === project.id;
   }, [project.id, timedProject?.id]);
 
-  const totalTime: string = useMemo(() => {
-    const minutes: number = Math.floor(project.totalSecondsSpent / 60);
-    const seconds: number = project.totalSecondsSpent - minutes * 60;
+  const totalTime: string = convertSecondsToDuration(project.totalSecondsSpent);
 
-    const minutesStringConversion: string =
-      minutes < 10 ? `0${minutes}` : minutes.toString();
-    const secondsStringConversion: string =
-      seconds < 10 ? `0${seconds}` : seconds.toString();
+  const giveUpButton: JSX.Element = (
+    <div className={classes.projectItemButton}>
+      <div>Give Up</div>
+      <CurrencyContainer amount={10} />
+    </div>
+  );
 
-    return `${minutesStringConversion}:${secondsStringConversion}`;
-  }, [project.totalSecondsSpent]);
+  const markCompleteButton: JSX.Element = (
+    <div className={classes.projectItemButton}>
+      <div>Mark Complete</div>
+      <CurrencyContainer amount={completionReward} />
+    </div>
+  );
 
   return (
     <div className={classes.projectItem}>
@@ -129,12 +141,12 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
       </div>
       <div className={classes.buttonContainer}>
         <Button
-          text="Give Up"
-          style={styles.projectItemButton}
+          text={giveUpButton}
+          style={{ ...styles.projectItemButton, backgroundColor: "lightcoral" }}
           onClick={giveUp}
         />
         <Button
-          text="Mark Complete"
+          text={markCompleteButton}
           style={styles.projectItemButton}
           onClick={markComplete}
         />
