@@ -11,6 +11,7 @@ import { TimerContext } from "../../context/TimerContext";
 // Components
 
 import Button from "../../components/Button/Button";
+import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContainer";
 
 // Assets
 
@@ -34,6 +35,13 @@ const ProjectInputForm = (): JSX.Element => {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const buttonText: JSX.Element = (
+    <div className={classes.addProjectFormButton}>
+      <div>Add Project</div>
+      <CurrencyContainer amount={10} />
+    </div>
+  );
+
   return (
     <div className={classes.inputForm}>
       <div className={classes.inputHeader}>What Would You Like To Work On?</div>
@@ -44,7 +52,7 @@ const ProjectInputForm = (): JSX.Element => {
         placeholder="Project Name"
       />
       <Button
-        text="Add Project"
+        text={buttonText}
         style={{ backgroundColor: "lightgreen" }}
         onClick={() => {
           addProject({
@@ -136,8 +144,15 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 };
 
 const ProjectTable = (): JSX.Element => {
-  const { projects, isAddingProject, setIsAddingProject } =
-    useContext(ProjectContext);
+  const {
+    projects,
+    projectSlotUpgradeCost,
+    maxProjects,
+    upgradeProjectSlots,
+    isAddingProject,
+    setIsAddingProject,
+  } = useContext(ProjectContext);
+  const { currency } = useContext(CurrencyContext);
 
   const [activeFilters, setActiveFilters] = useState<ProjectStatus[]>([
     ProjectStatus.Active,
@@ -164,9 +179,13 @@ const ProjectTable = (): JSX.Element => {
           })}
         </div>
         <div
-          onClick={() => {
-            setIsAddingProject(true);
-          }}
+          onClick={
+            currency > projectSlotUpgradeCost
+              ? () => {
+                  setIsAddingProject(true);
+                }
+              : undefined
+          }
           className={classes.addProjectButton}
         >
           +

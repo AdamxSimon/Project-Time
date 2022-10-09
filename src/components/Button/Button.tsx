@@ -15,7 +15,7 @@ import { combineClassNames } from "../../utils";
 import classes from "./styles.module.css";
 
 interface ButtonProps {
-  text: string;
+  text: string | JSX.Element;
   onClick: () => void;
   disabled?: boolean;
   classOverride?: string;
@@ -32,7 +32,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       className={combineClassNames(classes.button, classOverride ?? "")}
       style={
         disabled
-          ? styles.disabled
+          ? { ...style, ...styles.disabled }
           : isActive
           ? { ...style, ...styles.active }
           : style

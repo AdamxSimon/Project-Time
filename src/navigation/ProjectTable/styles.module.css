@@ -97,6 +97,12 @@
   gap: 4px;
 }
 
+.addProjectFormButton {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .addProjectButton {
   height: 40px;
   width: 40px;

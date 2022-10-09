@@ -1,10 +1,11 @@
 // React
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 
 // Types
 
 import { Project } from "../types";
+import { CurrencyContext } from "./CurrencyContext";
 
 export enum ProjectStatus {
   Active,
@@ -14,6 +15,9 @@ export enum ProjectStatus {
 
 interface ProjectContextValue {
   projects: Project[];
+  maxProjects: number;
+  projectSlotUpgradeCost: number;
+  upgradeProjectSlots: () => void;
   addProject: (project: Project) => void;
   abandonProject: (id: number) => void;
   completeProject: (id: number) => void;
@@ -22,7 +26,9 @@ interface ProjectContextValue {
   updateProjectSeconds: (projectToUpdate: Project, seconds: number) => void;
 }
 
-const initialSaveData: string | null = localStorage.getItem("projects");
+const initialProjectsSaveData: string | null = localStorage.getItem("projects");
+const initialMaxProjectsSaveData: string | null =
+  localStorage.getItem("maxProjects");
 
 export const ProjectContext: React.Context<ProjectContextValue> =
   createContext<ProjectContextValue>({} as ProjectContextValue);
@@ -32,16 +38,24 @@ interface ProjectProviderProps {
 }
 
 const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
+  const { addCurrency, removeCurrency } = useContext(CurrencyContext);
+
   const [projects, setProjects] = useState<Project[]>(
-    initialSaveData ? JSON.parse(initialSaveData) : []
+    initialProjectsSaveData ? JSON.parse(initialProjectsSaveData) : []
+  );
+  const [maxProjects, setMaxProjects] = useState<number>(
+    initialMaxProjectsSaveData ? JSON.parse(initialMaxProjectsSaveData) : 1
   );
   const [isAddingProject, setIsAddingProject] = useState<boolean>(
-    !initialSaveData
+    !initialProjectsSaveData
   );
+
+  const projectSlotUpgradeCost: number = (maxProjects + 1) * 10;
 
   const addProject = (project: Project): void => {
     setProjects([...projects, project]);
     setIsAddingProject(false);
+    addCurrency(10);
   };
 
   const abandonProject = (id: number): void => {
@@ -83,6 +97,11 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     );
   };
 
+  const upgradeProjectSlots = (): void => {
+    setMaxProjects((previousState) => (previousState += 1));
+    removeCurrency(projectSlotUpgradeCost);
+  };
+
   useEffect(() => {
     localStorage.setItem("projects", JSON.stringify(projects));
 
@@ -95,8 +114,15 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     }
   }, [projects]);
 
+  useEffect(() => {
+    localStorage.setItem("maxProjects", maxProjects.toString());
+  }, [maxProjects]);
+
   const value: ProjectContextValue = {
     projects,
+    maxProjects,
+    projectSlotUpgradeCost,
+    upgradeProjectSlots,
     addProject,
     abandonProject,
     completeProject,
