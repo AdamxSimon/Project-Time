@@ -6,6 +6,13 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.projectTimer::-webkit-scrollbar {
+  display: none;
 }
 
 .header {
@@ -36,7 +43,6 @@
   font-weight: bold;
 }
 
-.totalTime,
 .input {
   padding: 0;
   outline: 0;
@@ -66,6 +72,11 @@
   align-items: center;
 }
 
+.totalTime {
+  flex: 1;
+  text-align: right;
+}
+
 .stage {
   font-size: 48px;
 }
@@ -85,7 +96,7 @@
 }
 
 .projectSelector {
-  height: 40px;
+  min-height: 40px;
   width: 240px;
   border: 1px solid black;
   border-radius: 8px;

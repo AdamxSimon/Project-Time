@@ -33,7 +33,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s, box-shadow 0.2s;
 }

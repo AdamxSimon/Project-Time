@@ -68,7 +68,7 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
           transform: shouldShowList ? "rotate(180deg)" : "rotate(0deg)",
         }}
       >
-        ▼
+        ⮟
       </div>
 
       {shouldShowList && (

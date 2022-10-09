@@ -15,28 +15,33 @@ const Carousel = (props: CarouselProps): JSX.Element => {
 
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
+  const cycleBackward = () => {
+    if (selectedIndex === 0) {
+      setSelectedIndex(components.length - 1);
+    } else {
+      setSelectedIndex((previousIndex) => (previousIndex -= 1));
+    }
+  };
+
+  const cycleForward = () => {
+    if (selectedIndex === components.length - 1) {
+      setSelectedIndex(0);
+    } else {
+      setSelectedIndex((previousIndex) => (previousIndex += 1));
+    }
+  };
+
   return (
     <div className={classes.carouselContainer}>
       <div className={classes.carousel}>
-        <div
-          className={classes.directionButton}
-          onClick={() => {
-            if (selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
-          }}
-        >
-          {"<"}
+        <div className={classes.directionButton} onClick={cycleBackward}>
+          ⮜
         </div>
         <div className={classes.componentContainer}>
           {components[selectedIndex]}
         </div>
-        <div
-          className={classes.directionButton}
-          onClick={() => {
-            if (selectedIndex < components.length - 1)
-              setSelectedIndex(selectedIndex + 1);
-          }}
-        >
-          {">"}
+        <div className={classes.directionButton} onClick={cycleForward}>
+          ⮞
         </div>
       </div>
     </div>
