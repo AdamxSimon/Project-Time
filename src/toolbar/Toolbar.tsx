@@ -4,13 +4,13 @@ import { useContext } from "react";
 
 // Context
 
-import { CurrencyContext } from "../../context/CurrencyContext";
-import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
+import { CurrencyContext } from "../context/CurrencyContext";
+import { ProjectContext, ProjectStatus } from "../context/ProjectContext";
 
 // Assets
 
-import projectsIcon from "../../assets/projects.png";
-import coinIcon from "../../assets/coin.png";
+import projectsIcon from "../assets/projects.png";
+import coinIcon from "../assets/coin.png";
 
 // Styles
 

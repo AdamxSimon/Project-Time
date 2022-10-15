@@ -1,9 +1,9 @@
 // Components
 
-import Carousel from "./components/Carousel/Carousel";
-import Toolbar from "./components/Toolbar/Toolbar";
-import ProjectTable from "./navigation/ProjectTable/ProjectTable";
-import ProjectTimer from "./navigation/ProjectTimer/ProjectTimer";
+import Carousel from "./carousel/Carousel";
+import Toolbar from "./toolbar/Toolbar";
+import ProjectTable from "./tools/ProjectTable/ProjectTable";
+import ProjectTimer from "./tools/ProjectTimer/ProjectTimer";
 
 // Styles
 
