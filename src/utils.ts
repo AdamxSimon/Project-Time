@@ -7,13 +7,17 @@ export const isEven = (number: number): boolean => {
 };
 
 export const convertSecondsToDuration = (seconds: number) => {
-  const durationMinutes: number = Math.floor(seconds / 60);
-  const durationSeconds: number = seconds - durationMinutes * 60;
+  const durationHours: number = Math.floor(seconds / 3600);
+  const durationMinutes: number = Math.floor(seconds / 60) - durationHours * 60;
+  const durationSeconds: number =
+    seconds - durationHours * 3600 - durationMinutes * 60;
 
+  const hoursStringConversion: string =
+    durationHours < 10 ? `0${durationHours}` : durationHours.toString();
   const minutesStringConversion: string =
     durationMinutes < 10 ? `0${durationMinutes}` : durationMinutes.toString();
   const secondsStringConversion: string =
     durationSeconds < 10 ? `0${durationSeconds}` : durationSeconds.toString();
 
-  return `${minutesStringConversion}:${secondsStringConversion}`;
+  return `${hoursStringConversion}:${minutesStringConversion}:${secondsStringConversion}`;
 };

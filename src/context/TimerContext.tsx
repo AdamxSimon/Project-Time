@@ -77,7 +77,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     project: Project
   ): void => {
     setCurrentStage(stage);
-    setTimer(`${minutes < 10 ? `0${minutes}` : minutes.toString()}:00`);
+    setTimer(convertSecondsToDuration(minutes * 60));
     startTimeRef.current = Date.now();
     if (!projectTimeRef.current) {
       projectTimeRef.current = project.totalSecondsSpent;
@@ -137,7 +137,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       rewardAmountRef.current = 0;
       setTimerMinutes(null);
     },
-    [addCurrency, timerMinutes]
+    [addCurrency]
   );
 
   const startTimerSession = (
