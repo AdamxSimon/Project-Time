@@ -66,6 +66,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const startTimeRef = useRef<number | null>(null);
   const intervalRef = useRef({} as NodeJS.Timer);
   const projectTimeRef = useRef<number | null>(null);
+  const rewardAmountRef = useRef<number>(0);
 
   const { projects, updateProjectSeconds } = useContext(ProjectContext);
   const { addCurrency } = useContext(CurrencyContext);
@@ -130,9 +131,10 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       projectTimeRef.current = null;
 
       if (reason === ReasonTimerStopped.Completed) {
-        addCurrency(timerMinutes || 0);
+        addCurrency(rewardAmountRef.current);
       }
 
+      rewardAmountRef.current = 0;
       setTimerMinutes(null);
     },
     [addCurrency, timerMinutes]
@@ -147,6 +149,8 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     setIsActive(true);
     setTimedProject(project);
     setTimerMinutes((activeMinutes + breakMinutes) * cycles - breakMinutes);
+    rewardAmountRef.current =
+      (activeMinutes + breakMinutes) * cycles - breakMinutes;
     const stages: { (): void }[] = [];
     for (let counter = 0; counter < cycles; counter++) {
       stages.push(() => startTimer(activeMinutes, TimerStage.Active, project));
