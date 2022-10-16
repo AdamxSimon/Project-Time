@@ -65,7 +65,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const stagesStepRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const intervalRef = useRef({} as NodeJS.Timer);
-  const initialProjectTimeRef = useRef<number | null>(null);
+  const projectTimeRef = useRef<number | null>(null);
 
   const { projects, updateProjectSeconds } = useContext(ProjectContext);
   const { addCurrency } = useContext(CurrencyContext);
@@ -78,7 +78,9 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     setCurrentStage(stage);
     setTimer(`${minutes < 10 ? `0${minutes}` : minutes.toString()}:00`);
     startTimeRef.current = Date.now();
-    initialProjectTimeRef.current = project.totalSecondsSpent;
+    if (!projectTimeRef.current) {
+      projectTimeRef.current = project.totalSecondsSpent;
+    }
     clearInterval(intervalRef.current);
 
     const interval: NodeJS.Timer = setInterval(() => {
@@ -95,11 +97,14 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       if (stage === TimerStage.Active && timeLeftInSeconds >= 0) {
         updateProjectSeconds(
           project,
-          (initialProjectTimeRef.current as number) + differenceInSeconds
+          (projectTimeRef.current as number) + differenceInSeconds
         );
       }
 
       if (timeLeftInSeconds < 0 && stagesStepRef.current !== null) {
+        if (projectTimeRef.current && stage === TimerStage.Active) {
+          projectTimeRef.current += minutes * 60;
+        }
         stagesStepRef.current += 1;
         if (stagesStepRef.current <= stagesRef.current.length - 1) {
           stagesRef.current[stagesStepRef.current]();
@@ -122,7 +127,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       startTimeRef.current = null;
       stagesRef.current = [];
       stagesStepRef.current = null;
-      initialProjectTimeRef.current = null;
+      projectTimeRef.current = null;
 
       if (reason === ReasonTimerStopped.Completed) {
         addCurrency(timerMinutes || 0);
