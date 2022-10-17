@@ -1,6 +1,6 @@
 // React
 
-import { useContext, useRef, useState, useMemo } from "react";
+import { useContext, useRef, useState, useMemo, useEffect } from "react";
 
 // Context
 
@@ -17,10 +17,14 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 
 import sigma from "../../assets/sigma.png";
 import stopwatch from "../../assets/stopwatch.png";
+import pencil from "../../assets/pencil.png";
 
 // Utils
 
-import { convertSecondsToDuration } from "../../utils";
+import {
+  convertDurationToSeconds,
+  convertSecondsToDuration,
+} from "../../utils";
 
 // Types
 
@@ -74,8 +78,15 @@ const ProjectInputForm = (): JSX.Element => {
 const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   const { project } = props;
 
+  const [isEditingTime, setIsEditingTime] = useState<boolean>(false);
+
+  const editedHoursRef = useRef<HTMLInputElement>(null);
+  const editedMinutesRef = useRef<HTMLInputElement>(null);
+  const editedSecondsRef = useRef<HTMLInputElement>(null);
+
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
-  const { completeProject, abandonProject } = useContext(ProjectContext);
+  const { completeProject, abandonProject, updateProjectSeconds } =
+    useContext(ProjectContext);
   const { timedProject, timer } = useContext(TimerContext);
 
   const completionReward: number = Math.floor(
@@ -112,6 +123,19 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
     </div>
   );
 
+  useEffect(() => {
+    if (
+      isEditingTime &&
+      editedHoursRef.current &&
+      editedMinutesRef.current &&
+      editedSecondsRef.current
+    ) {
+      editedHoursRef.current.value = totalTime.substring(0, 2);
+      editedMinutesRef.current.value = totalTime.substring(3, 5);
+      editedSecondsRef.current.value = totalTime.substring(6, 8);
+    }
+  }, [isEditingTime, totalTime]);
+
   return (
     <div className={classes.projectItem}>
       <div className={classes.infoContainer}>
@@ -124,9 +148,31 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
               src={sigma}
               alt={"Sigma"}
             />
-            <div>{totalTime}</div>
+            {isEditingTime ? (
+              <div className={classes.timeEditor}>
+                <input
+                  ref={editedHoursRef}
+                  className={classes.timeInput}
+                  type="number"
+                />
+                :
+                <input
+                  ref={editedMinutesRef}
+                  className={classes.timeInput}
+                  type="number"
+                />
+                :
+                <input
+                  ref={editedSecondsRef}
+                  className={classes.timeInput}
+                  type="number"
+                />
+              </div>
+            ) : (
+              <div>{totalTime}</div>
+            )}
           </div>
-          {isProjectActivelyTimed && (
+          {isProjectActivelyTimed ? (
             <div className={classes.timer}>
               <img
                 height={"100%"}
@@ -136,6 +182,33 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
               />
               <div>{timer}</div>
             </div>
+          ) : (
+            <>
+              <img
+                height={"100%"}
+                className={classes.pencil}
+                src={pencil}
+                alt="Pencil"
+                onClick={() => {
+                  setIsEditingTime(!isEditingTime);
+                  if (
+                    isEditingTime &&
+                    editedHoursRef.current &&
+                    editedMinutesRef.current &&
+                    editedSecondsRef.current
+                  ) {
+                    updateProjectSeconds(
+                      project,
+                      convertDurationToSeconds(
+                        +editedHoursRef.current.value,
+                        +editedMinutesRef.current.value,
+                        +editedSecondsRef.current.value
+                      )
+                    );
+                  }
+                }}
+              />
+            </>
           )}
         </div>
       </div>
