@@ -1,0 +1,33 @@
+.modalContainer {
+  max-height: 90vh;
+  width: 400px;
+  max-width: 90vw;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modalContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.image {
+  margin-top: 32px;
+}
+
+.header {
+  margin-top: 24px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.body {
+  width: 100%;
+  text-align: center;
+  margin: 16px 0;
+}

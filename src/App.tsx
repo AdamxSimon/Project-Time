@@ -4,6 +4,7 @@ import Carousel from "./carousel/Carousel";
 import Toolbar from "./toolbar/Toolbar";
 import ProjectTable from "./tools/ProjectTable/ProjectTable";
 import ProjectTimer from "./tools/ProjectTimer/ProjectTimer";
+import ModalOverlay from "./overlays/modal-overlay/ModalOverlay";
 
 // Styles
 
@@ -14,6 +15,10 @@ const App = (): JSX.Element => {
     <div className={classes.app}>
       <Toolbar />
       <Carousel components={[<ProjectTable />, <ProjectTimer />]} />
+
+      {/* Overlays */}
+
+      <ModalOverlay />
     </div>
   );
 };
