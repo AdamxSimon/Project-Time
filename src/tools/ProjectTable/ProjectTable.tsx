@@ -7,6 +7,7 @@ import { useContext, useRef, useState, useMemo, useEffect } from "react";
 import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 import { CurrencyContext } from "../../context/CurrencyContext";
 import { TimerContext } from "../../context/TimerContext";
+import { ToastContext } from "../../context/ToastContext";
 
 // Components
 
@@ -18,6 +19,7 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 import sigma from "../../assets/sigma.png";
 import stopwatch from "../../assets/stopwatch.png";
 import pencil from "../../assets/pencil.png";
+import checkmark from "../../assets/checkmark.png";
 
 // Utils
 
@@ -187,7 +189,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
               <img
                 height={"100%"}
                 className={classes.pencil}
-                src={pencil}
+                src={isEditingTime ? checkmark : pencil}
                 alt="Pencil"
                 onClick={() => {
                   setIsEditingTime(!isEditingTime);
@@ -238,10 +240,15 @@ const ProjectTable = (): JSX.Element => {
     setIsAddingProject,
   } = useContext(ProjectContext);
   const { currency } = useContext(CurrencyContext);
+  const { showToast } = useContext(ToastContext);
 
   const [activeFilters, setActiveFilters] = useState<ProjectStatus[]>([
     ProjectStatus.Active,
   ]);
+
+  const activeProjects: Project[] = projects.filter(
+    (project) => project.status === ProjectStatus.Active
+  );
 
   const renderedProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -264,16 +271,30 @@ const ProjectTable = (): JSX.Element => {
           })}
         </div>
         <div
-          onClick={
-            currency > projectSlotUpgradeCost
-              ? () => {
-                  setIsAddingProject(true);
-                }
-              : undefined
-          }
           className={classes.addProjectButton}
+          onClick={() => {
+            if (activeProjects.length !== maxProjects) {
+              setIsAddingProject(true);
+            } else if (currency > projectSlotUpgradeCost) {
+              upgradeProjectSlots();
+              setIsAddingProject(true);
+            } else {
+              showToast("Not Enough Coins!");
+            }
+          }}
+          style={{
+            backgroundColor:
+              activeProjects.length === maxProjects
+                ? currency > projectSlotUpgradeCost
+                  ? "lightgreen"
+                  : "lightcoral"
+                : "white",
+          }}
         >
-          +
+          <div>Add Project</div>
+          {activeProjects.length === maxProjects && (
+            <CurrencyContainer amount={projectSlotUpgradeCost} />
+          )}
         </div>
       </>
     );

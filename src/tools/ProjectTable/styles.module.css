@@ -146,25 +146,23 @@
 }
 
 .addProjectButton {
-  height: 40px;
-  width: 40px;
-  background-color: white;
+  max-height: 40px;
+  width: max-content;
   padding: 8px;
-  border-radius: 50%;
+  border-radius: 8px;
   box-shadow: 0 0 8px gray;
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
   position: absolute;
   bottom: 8px;
-  left: 0;
-  right: 0;
-  font-size: 24px;
+  left: 50%;
+  right: 50%;
+  transform: translate(-50%);
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.2s, box-shadow 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .addProjectButton:active {

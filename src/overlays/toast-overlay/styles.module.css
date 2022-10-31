@@ -1,6 +1,5 @@
 .toast {
-  height: fit-content;
-  width: fit-content;
+  min-width: fit-content;
   background-color: royalblue;
   padding: 8px;
   border-radius: 8px;
@@ -11,6 +10,8 @@
   transform: translate(-50%);
   text-align: center;
   color: white;
+  overflow: hidden;
+  white-space: nowrap;
   z-index: 3;
   animation-duration: 0.2s;
   animation-timing-function: linear;
@@ -31,13 +32,13 @@
   }
 
   100% {
-    top: 4px;
+    top: 48px;
   }
 }
 
 @keyframes rise {
   0% {
-    top: 4px;
+    top: 48px;
   }
 
   100% {
