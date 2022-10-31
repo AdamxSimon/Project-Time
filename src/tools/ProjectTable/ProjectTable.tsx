@@ -125,6 +125,10 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
     </div>
   );
 
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>): void => {
+    event.target.select();
+  };
+
   useEffect(() => {
     if (
       isEditingTime &&
@@ -156,18 +160,21 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                   ref={editedHoursRef}
                   className={classes.timeInput}
                   type="number"
+                  onFocus={handleFocus}
                 />
                 :
                 <input
                   ref={editedMinutesRef}
                   className={classes.timeInput}
                   type="number"
+                  onFocus={handleFocus}
                 />
                 :
                 <input
                   ref={editedSecondsRef}
                   className={classes.timeInput}
                   type="number"
+                  onFocus={handleFocus}
                 />
               </div>
             ) : (
@@ -284,11 +291,7 @@ const ProjectTable = (): JSX.Element => {
           }}
           style={{
             backgroundColor:
-              activeProjects.length === maxProjects
-                ? currency > projectSlotUpgradeCost
-                  ? "lightgreen"
-                  : "lightcoral"
-                : "white",
+              activeProjects.length === maxProjects ? "lightcoral" : "white",
           }}
         >
           <div>Add Project</div>
