@@ -9,6 +9,7 @@ import CurrencyProvider from "./context/CurrencyContext";
 import ModalProvider from "./context/ModalContext";
 import ProjectProvider from "./context/ProjectContext";
 import TimerProvider from "./context/TimerContext";
+import ToastProvider from "./context/ToastContext";
 
 // Styles
 
@@ -20,12 +21,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ModalProvider>
-    <CurrencyProvider>
-      <ProjectProvider>
-        <TimerProvider>
-          <App />
-        </TimerProvider>
-      </ProjectProvider>
-    </CurrencyProvider>
+    <ToastProvider>
+      <CurrencyProvider>
+        <ProjectProvider>
+          <TimerProvider>
+            <App />
+          </TimerProvider>
+        </ProjectProvider>
+      </CurrencyProvider>
+    </ToastProvider>
   </ModalProvider>
 );

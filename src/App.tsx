@@ -5,6 +5,7 @@ import Toolbar from "./toolbar/Toolbar";
 import ProjectTable from "./tools/ProjectTable/ProjectTable";
 import ProjectTimer from "./tools/ProjectTimer/ProjectTimer";
 import ModalOverlay from "./overlays/modal-overlay/ModalOverlay";
+import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
 
 // Styles
 
@@ -19,6 +20,7 @@ const App = (): JSX.Element => {
       {/* Overlays */}
 
       <ModalOverlay />
+      <ToastOverlay />
     </div>
   );
 };

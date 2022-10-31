@@ -12,12 +12,7 @@ import {
 // Context
 
 import { ProjectContext, ProjectStatus } from "./ProjectContext";
-import { ModalContext } from "./ModalContext";
 import { CurrencyContext } from "./CurrencyContext";
-
-// Components
-
-import TimerCompleteModal from "../modals/timer-complete-modal/TimerCompleteModal";
 
 // Utils
 
@@ -26,6 +21,7 @@ import { convertSecondsToDuration } from "../utils";
 // Types
 
 import { Project } from "../types";
+import { ToastContext } from "./ToastContext";
 
 enum TimerStage {
   Active = "Active",
@@ -75,7 +71,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
 
   const { projects, updateProjectSeconds } = useContext(ProjectContext);
   const { addCurrency } = useContext(CurrencyContext);
-  const { presentComponentAsModal } = useContext(ModalContext);
+  const { showToast } = useContext(ToastContext);
 
   const startTimer = (
     minutes: number,
@@ -138,15 +134,13 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
 
       if (reason === ReasonTimerStopped.Completed) {
         addCurrency(rewardAmountRef.current);
-        presentComponentAsModal(
-          <TimerCompleteModal coins={rewardAmountRef.current} />
-        );
+        showToast("Timer Completed!");
       }
 
       rewardAmountRef.current = 0;
       setTimerMinutes(null);
     },
-    [addCurrency, presentComponentAsModal]
+    [addCurrency, showToast]
   );
 
   const startTimerSession = (
