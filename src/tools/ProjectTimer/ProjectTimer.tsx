@@ -1,11 +1,12 @@
 // React
 
-import { useState, useContext, useMemo, useEffect, useRef } from "react";
+import React, { useState, useContext, useMemo, useEffect, useRef } from "react";
 
 // Context
 
 import { ReasonTimerStopped, TimerContext } from "../../context/TimerContext";
 import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
+import { ToastContext } from "../../context/ToastContext";
 
 // Components
 
@@ -99,6 +100,7 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
 
 const ProjectTimerForm = (): JSX.Element => {
   const { startTimerSession } = useContext(TimerContext);
+  const { showToast } = useContext(ToastContext);
 
   const [activeMinutes, setActiveMinutes] = useState<number>(25);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
@@ -114,33 +116,46 @@ const ProjectTimerForm = (): JSX.Element => {
     event: React.ChangeEvent<HTMLInputElement>,
     setState: React.Dispatch<React.SetStateAction<number>>
   ): void => {
-    const result: string = event.target.value;
-    const trimmedResult: number = parseInt(result, 10);
-    setState(trimmedResult || 1);
-    if (!trimmedResult) event.target.select();
+    const result: number = parseInt(event.target.value, 10);
+    if (result < 1000 || Number.isNaN(result)) {
+      setState(result);
+    } else if (result >= 1000) {
+      showToast("Three Digits Max!");
+    }
   };
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>): void => {
     event.target.select();
   };
 
-  const totalTimeInMinutes: number =
-    (activeMinutes + breakMinutes) * cycles - breakMinutes;
+  const handleBlur = (
+    event: React.FocusEvent<HTMLInputElement>,
+    setState: React.Dispatch<React.SetStateAction<number>>,
+    shouldRevertToOne?: boolean
+  ): void => {
+    if (event.target.value === "" || event.target.value === "0")
+      setState(shouldRevertToOne ? 1 : 0);
+  };
+
+  const totalTimeInMinutes: number = useMemo((): number => {
+    const calculation: number =
+      ((activeMinutes || 0) + (breakMinutes || 0)) * (cycles || 0) -
+      (breakMinutes || 0);
+    return calculation < 0 ? 0 : calculation;
+  }, [activeMinutes, breakMinutes, cycles]);
 
   const startTimerButton: JSX.Element = (
     <div className={classes.startProjectTimerButton}>
       <div>Start Timer</div>
-      <CurrencyContainer amount={totalTimeInMinutes} />
+      <CurrencyContainer amount={(activeMinutes || 0) * (cycles || 0)} />
     </div>
   );
 
   useEffect(() => {
     if (cycles === 1) {
       setBreakMinutes(0);
-    } else if (cycles > 1 && breakMinutes === 0) {
-      setBreakMinutes(5);
     }
-  }, [breakMinutes, cycles]);
+  }, [cycles]);
 
   return (
     <>
@@ -153,9 +168,10 @@ const ProjectTimerForm = (): JSX.Element => {
           <input
             type="number"
             className={classes.input}
-            value={activeMinutes}
+            value={Number(activeMinutes).toString()}
             onChange={(event) => inputHandler(event, setActiveMinutes)}
             onFocus={handleFocus}
+            onBlur={(event) => handleBlur(event, setActiveMinutes, true)}
           />
         </div>
         <div className={classes.inputGroup}>
@@ -163,13 +179,14 @@ const ProjectTimerForm = (): JSX.Element => {
           <input
             type="number"
             className={classes.input}
-            value={breakMinutes}
+            value={Number(breakMinutes).toString()}
             onChange={
               cycles > 1
                 ? (event) => inputHandler(event, setBreakMinutes)
-                : undefined
+                : () => showToast("You Need Multiple Cycles For Breaks!")
             }
             onFocus={handleFocus}
+            onBlur={(event) => handleBlur(event, setBreakMinutes)}
           />
         </div>
         <div className={classes.inputGroup}>
@@ -177,9 +194,10 @@ const ProjectTimerForm = (): JSX.Element => {
           <input
             type="number"
             className={classes.input}
-            value={cycles}
+            value={Number(cycles).toString()}
             onChange={(event) => inputHandler(event, setCycles)}
             onFocus={handleFocus}
+            onBlur={(event) => handleBlur(event, setCycles, true)}
           />
         </div>
         <div className={classes.totalTimeGroup}>

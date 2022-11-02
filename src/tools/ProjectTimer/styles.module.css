@@ -36,6 +36,7 @@
   width: 100%;
   border-bottom: 1px solid black;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -44,12 +45,14 @@
 }
 
 .input {
+  width: 36px;
+  background-color: lavender;
   padding: 0;
   outline: 0;
   border: none;
-  flex: 1;
+  border-radius: 8px;
   font-size: 16px;
-  text-align: right;
+  text-align: center;
 }
 
 .input:hover {
