@@ -105,17 +105,22 @@
 }
 
 .timeInput {
-  width: 24px;
+  width: 36px;
+  background-color: lavender;
   padding: 0;
+  outline: 0;
   border: none;
-  display: flex;
-  align-items: center;
+  border-radius: 8px;
   font-size: 16px;
   text-align: center;
 }
 
 .timeInput:focus-visible {
   outline: none;
+}
+
+.timeInput:hover {
+  font-weight: bold;
 }
 
 .timeInput::-webkit-outer-spin-button,

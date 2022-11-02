@@ -29,3 +29,18 @@ export const convertDurationToSeconds = (
 ): number => {
   return hours * 3600 + minutes * 60 + seconds;
 };
+
+export const extractFromDuration = (
+  duration: string,
+  extraction: "hours" | "minutes" | "seconds"
+): string => {
+  const firstColonIndex: number = duration.indexOf(":");
+  switch (extraction) {
+    case "hours":
+      return duration.substring(0, firstColonIndex);
+    case "minutes":
+      return duration.substring(firstColonIndex + 1, firstColonIndex + 3);
+    case "seconds":
+      return duration.substring(firstColonIndex + 4, firstColonIndex + 6);
+  }
+};

@@ -26,6 +26,7 @@ import checkmark from "../../assets/checkmark.png";
 import {
   convertDurationToSeconds,
   convertSecondsToDuration,
+  extractFromDuration,
 } from "../../utils";
 
 // Types
@@ -82,14 +83,15 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const [isEditingTime, setIsEditingTime] = useState<boolean>(false);
 
-  const editedHoursRef = useRef<HTMLInputElement>(null);
-  const editedMinutesRef = useRef<HTMLInputElement>(null);
-  const editedSecondsRef = useRef<HTMLInputElement>(null);
+  const [editedHours, setEditedHours] = useState<string>("");
+  const [editedMinutes, setEditedMinutes] = useState<string>("");
+  const [editedSeconds, setEditedSeconds] = useState<string>("");
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
   const { completeProject, abandonProject, updateProjectSeconds } =
     useContext(ProjectContext);
   const { timedProject, timer } = useContext(TimerContext);
+  const { showToast } = useContext(ToastContext);
 
   const completionReward: number = Math.floor(
     project.totalSecondsSpent / 60 / 2
@@ -125,20 +127,27 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
     </div>
   );
 
+  const inputHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setState: React.Dispatch<React.SetStateAction<string>>
+  ): void => {
+    const result: number = parseInt(event.target.value, 10);
+    if (result < 1000 || Number.isNaN(result)) {
+      setState(result.toString());
+    } else if (result >= 1000) {
+      showToast("Three Digits Max!");
+    }
+  };
+
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>): void => {
     event.target.select();
   };
 
   useEffect(() => {
-    if (
-      isEditingTime &&
-      editedHoursRef.current &&
-      editedMinutesRef.current &&
-      editedSecondsRef.current
-    ) {
-      editedHoursRef.current.value = totalTime.substring(0, 2);
-      editedMinutesRef.current.value = totalTime.substring(3, 5);
-      editedSecondsRef.current.value = totalTime.substring(6, 8);
+    if (isEditingTime) {
+      setEditedHours(extractFromDuration(totalTime, "hours"));
+      setEditedMinutes(extractFromDuration(totalTime, "minutes"));
+      setEditedSeconds(extractFromDuration(totalTime, "seconds"));
     }
   }, [isEditingTime, totalTime]);
 
@@ -157,23 +166,26 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
             {isEditingTime ? (
               <div className={classes.timeEditor}>
                 <input
-                  ref={editedHoursRef}
                   className={classes.timeInput}
                   type="number"
+                  value={editedHours}
+                  onChange={(event) => inputHandler(event, setEditedHours)}
                   onFocus={handleFocus}
                 />
                 :
                 <input
-                  ref={editedMinutesRef}
                   className={classes.timeInput}
                   type="number"
+                  value={editedMinutes}
+                  onChange={(event) => inputHandler(event, setEditedMinutes)}
                   onFocus={handleFocus}
                 />
                 :
                 <input
-                  ref={editedSecondsRef}
                   className={classes.timeInput}
                   type="number"
+                  value={editedSeconds}
+                  onChange={(event) => inputHandler(event, setEditedSeconds)}
                   onFocus={handleFocus}
                 />
               </div>
@@ -200,18 +212,13 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                 alt="Pencil"
                 onClick={() => {
                   setIsEditingTime(!isEditingTime);
-                  if (
-                    isEditingTime &&
-                    editedHoursRef.current &&
-                    editedMinutesRef.current &&
-                    editedSecondsRef.current
-                  ) {
+                  if (isEditingTime) {
                     updateProjectSeconds(
                       project,
                       convertDurationToSeconds(
-                        +editedHoursRef.current.value,
-                        +editedMinutesRef.current.value,
-                        +editedSecondsRef.current.value
+                        +editedHours || 0,
+                        +editedMinutes || 0,
+                        +editedSeconds || 0
                       )
                     );
                   }
