@@ -173,3 +173,10 @@
 .addProjectButton:active {
   box-shadow: 0 0 2px black;
 }
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
+}

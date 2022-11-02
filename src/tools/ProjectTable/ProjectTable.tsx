@@ -20,6 +20,7 @@ import sigma from "../../assets/sigma.png";
 import stopwatch from "../../assets/stopwatch.png";
 import pencil from "../../assets/pencil.png";
 import checkmark from "../../assets/checkmark.png";
+import close from "../../assets/close.png";
 
 // Utils
 
@@ -42,7 +43,12 @@ interface ProjectItemProps {
 }
 
 const ProjectInputForm = (): JSX.Element => {
-  const { projects, addProject } = useContext(ProjectContext);
+  const { projects, addProject, setIsAddingProject } =
+    useContext(ProjectContext);
+
+  const activeProjects: Project[] = projects.filter(
+    (project) => project.status === ProjectStatus.Active
+  );
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -74,6 +80,15 @@ const ProjectInputForm = (): JSX.Element => {
           });
         }}
       />
+      {activeProjects.length !== 0 && (
+        <img
+          className={classes.closeButton}
+          src={close}
+          alt={"Close"}
+          height={20}
+          onClick={() => setIsAddingProject(false)}
+        />
+      )}
     </div>
   );
 };
@@ -291,7 +306,6 @@ const ProjectTable = (): JSX.Element => {
               setIsAddingProject(true);
             } else if (currency > projectSlotUpgradeCost) {
               upgradeProjectSlots();
-              setIsAddingProject(true);
             } else {
               showToast("Not Enough Coins!");
             }
@@ -301,7 +315,11 @@ const ProjectTable = (): JSX.Element => {
               activeProjects.length === maxProjects ? "lightcoral" : "white",
           }}
         >
-          <div>Add Project</div>
+          <div>
+            {activeProjects.length === maxProjects
+              ? "Upgrade Project Slots"
+              : "Add Project"}
+          </div>
           {activeProjects.length === maxProjects && (
             <CurrencyContainer amount={projectSlotUpgradeCost} />
           )}
