@@ -13,6 +13,11 @@ import { ToastContext } from "../../context/ToastContext";
 import Button from "../../components/Button/Button";
 import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContainer";
 
+// Assets
+
+import EmptyTimerPNG from "../../assets/empty-timer.png";
+import TickerPNG from "../../assets/ticker.png";
+
 // Types
 
 import { Project } from "../../types";
@@ -20,6 +25,7 @@ import { Project } from "../../types";
 // Styles
 
 import classes from "./styles.module.css";
+import { extractFromDuration } from "../../utils";
 
 interface ProjectSelectorProps {
   selectProject: (project: Project) => void;
@@ -223,7 +229,7 @@ const ProjectTimerForm = (): JSX.Element => {
 };
 
 const ProjectTimer = (): JSX.Element => {
-  const { isActive, timer, currentStage, stopTimerSession, timerMinutes } =
+  const { isActive, timer, status, stopTimerSession, timerMinutes } =
     useContext(TimerContext);
   const { projects } = useContext(ProjectContext);
 
@@ -239,6 +245,22 @@ const ProjectTimer = (): JSX.Element => {
       <CurrencyContainer amount={timerMinutes || 0} />
     </div>
   );
+
+  const getRotation = (): string => {
+    if (!timer) {
+      return `rotate(0deg)`;
+    }
+
+    const seconds: number = Number(extractFromDuration(timer, "seconds"));
+    const secondsElapsed: number = 60 - seconds;
+    const proportion: number = secondsElapsed / 60;
+    const rotationDegrees: number = proportion
+      ? Math.floor(proportion * 360)
+      : 360;
+    return `rotate(${rotationDegrees}deg)`;
+  };
+
+  const rotation: string = getRotation();
 
   if (activeProjects.length === 0) {
     return (
@@ -259,8 +281,26 @@ const ProjectTimer = (): JSX.Element => {
   } else {
     return (
       <div className={classes.projectTimer}>
-        <div className={classes.stage}>{currentStage}</div>
-        <div className={classes.timer}>{timer}</div>
+        {/* <div className={classes.stage}>{currentStage}</div>
+        <div className={classes.timer}>{timer}</div> */}
+        <div className={classes.timerContainer}>
+          <img
+            className={classes.timerImage}
+            src={EmptyTimerPNG}
+            alt={"Empty Timer"}
+          />
+          <img
+            className={classes.ticker}
+            src={TickerPNG}
+            alt={"Ticker"}
+            style={{ transform: rotation }}
+          />
+          <div className={classes.timerInfoContainer}>
+            <div className={classes.stage}></div>
+            <div className={classes.duration}>{timer}</div>
+            <div className={classes.status}>{status}</div>
+          </div>
+        </div>
         <Button
           text={resetTimerButton}
           onClick={() => stopTimerSession(ReasonTimerStopped.Canceled)}

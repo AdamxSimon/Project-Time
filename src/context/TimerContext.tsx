@@ -23,9 +23,10 @@ import { convertSecondsToDuration } from "../utils";
 import { Project } from "../types";
 import { ToastContext } from "./ToastContext";
 
-enum TimerStage {
+enum TimerStatus {
   Active = "Active",
   Break = "Break",
+  Inactive = "Inactive",
 }
 
 export enum ReasonTimerStopped {
@@ -36,7 +37,7 @@ export enum ReasonTimerStopped {
 interface TimerContextValue {
   isActive: boolean;
   timer: string | null;
-  currentStage: TimerStage | null;
+  status: TimerStatus;
   startTimerSession: (
     activeMinutes: number,
     breakMinutes: number,
@@ -58,7 +59,7 @@ interface TimerProviderProps {
 const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [timer, setTimer] = useState<string | null>(null);
-  const [currentStage, setCurrentStage] = useState<TimerStage | null>(null);
+  const [status, setStatus] = useState<TimerStatus>(TimerStatus.Inactive);
   const [timedProject, setTimedProject] = useState<Project | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
 
@@ -75,10 +76,10 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
 
   const startTimer = (
     minutes: number,
-    stage: TimerStage,
+    status: TimerStatus,
     project: Project
   ): void => {
-    setCurrentStage(stage);
+    setStatus(status);
     setTimer(convertSecondsToDuration(minutes * 60));
     startTimeRef.current = Date.now();
     if (!projectTimeRef.current) {
@@ -97,7 +98,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       const timer = convertSecondsToDuration(timeLeftInSeconds);
       setTimer(timer);
 
-      if (stage === TimerStage.Active && timeLeftInSeconds >= 0) {
+      if (status === TimerStatus.Active && timeLeftInSeconds >= 0) {
         updateProjectSeconds(
           project,
           (projectTimeRef.current as number) + differenceInSeconds
@@ -105,7 +106,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       }
 
       if (timeLeftInSeconds < 0 && stagesStepRef.current !== null) {
-        if (projectTimeRef.current && stage === TimerStage.Active) {
+        if (projectTimeRef.current && status === TimerStatus.Active) {
           projectTimeRef.current += minutes * 60;
         }
         stagesStepRef.current += 1;
@@ -124,7 +125,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
     (reason: ReasonTimerStopped): void => {
       setIsActive(false);
       setTimedProject(null);
-      setCurrentStage(null);
+      setStatus(TimerStatus.Inactive);
       setTimer(null);
       clearInterval(intervalRef.current);
       startTimeRef.current = null;
@@ -156,9 +157,9 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       (activeMinutes + breakMinutes) * cycles - breakMinutes;
     const stages: { (): void }[] = [];
     for (let counter = 0; counter < cycles; counter++) {
-      stages.push(() => startTimer(activeMinutes, TimerStage.Active, project));
+      stages.push(() => startTimer(activeMinutes, TimerStatus.Active, project));
       if (!(counter === cycles - 1)) {
-        stages.push(() => startTimer(breakMinutes, TimerStage.Break, project));
+        stages.push(() => startTimer(breakMinutes, TimerStatus.Break, project));
       }
     }
     stagesRef.current = stages;
@@ -180,7 +181,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const value: TimerContextValue = {
     isActive,
     timer,
-    currentStage,
+    status,
     startTimerSession,
     stopTimerSession,
     timedProject,
