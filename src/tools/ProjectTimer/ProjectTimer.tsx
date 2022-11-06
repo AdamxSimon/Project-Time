@@ -17,6 +17,7 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 
 import EmptyTimerPNG from "../../assets/empty-timer.png";
 import TickerPNG from "../../assets/ticker.png";
+import DropdownArrowPNG from "../../assets/dropdown-arrow.png";
 
 // Types
 
@@ -70,14 +71,15 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
       onClick={() => setShouldShowList((shouldShowList) => !shouldShowList)}
     >
       <div className={classes.projectName}>{selectedProject?.name ?? ""}</div>
-      <div
+      <img
+        src={DropdownArrowPNG}
+        alt={"Dropdown Arrow"}
+        height={16}
         className={classes.arrow}
         style={{
           transform: shouldShowList ? "rotate(180deg)" : "rotate(0deg)",
         }}
-      >
-        ⮟
-      </div>
+      />
 
       {shouldShowList && (
         <div className={classes.projectList}>

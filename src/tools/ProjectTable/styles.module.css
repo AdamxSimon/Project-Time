@@ -83,10 +83,11 @@
 .timeInfo {
   height: 24px;
   display: flex;
+  align-items: center;
 }
 
 .icon {
-  margin-right: 4px;
+  margin-right: 8px;
 }
 
 .totalTime {

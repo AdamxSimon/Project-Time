@@ -16,9 +16,9 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 
 // Assets
 
-import sigma from "../../assets/sigma.png";
-import stopwatch from "../../assets/stopwatch.png";
-import pencil from "../../assets/pencil.png";
+import SigmaPNG from "../../assets/sigma.png";
+import TimerPNG from "../../assets/timer.png";
+import PencilPNG from "../../assets/pencil.png";
 import checkmark from "../../assets/checkmark.png";
 import close from "../../assets/close.png";
 
@@ -173,9 +173,9 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
         <div className={classes.timeInfo}>
           <div className={classes.totalTime}>
             <img
-              height={"100%"}
+              height={16}
               className={classes.icon}
-              src={sigma}
+              src={SigmaPNG}
               alt={"Sigma"}
             />
             {isEditingTime ? (
@@ -211,20 +211,20 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
           {isProjectActivelyTimed ? (
             <div className={classes.timer}>
               <img
-                height={"100%"}
+                height={16}
                 className={classes.icon}
-                src={stopwatch}
-                alt={"Stopwatch"}
+                src={TimerPNG}
+                alt={"Timer"}
               />
               <div>{timer}</div>
             </div>
           ) : (
             <>
               <img
-                height={"100%"}
+                height={16}
                 className={classes.pencil}
-                src={isEditingTime ? checkmark : pencil}
-                alt="Pencil"
+                src={isEditingTime ? checkmark : PencilPNG}
+                alt="Edit"
                 onClick={() => {
                   setIsEditingTime(!isEditingTime);
                   if (isEditingTime) {
