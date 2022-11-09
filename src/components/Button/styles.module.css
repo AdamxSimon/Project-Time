@@ -1,8 +1,9 @@
 .button {
   padding: 8px;
-  border: 2px solid black;
   border-radius: 8px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   user-select: none;
 }

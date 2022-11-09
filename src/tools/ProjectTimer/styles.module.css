@@ -138,6 +138,7 @@
 .projectSelector {
   min-height: 40px;
   width: 240px;
+  padding: 8px;
   border: 1px solid black;
   border-radius: 8px;
   display: flex;
@@ -147,6 +148,7 @@
 }
 
 .projectName {
+  margin: 0 24px;
   flex: 1;
   text-align: center;
 }
@@ -166,7 +168,7 @@
   display: flex;
   flex-direction: column;
   position: absolute;
-  top: 38px;
+  top: 100%;
   left: -1px;
   right: -1px;
   overflow: scroll;
@@ -190,14 +192,10 @@
 
 .startProjectTimerButton {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
 .resetTimerButton {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
+  gap: 12px;
 }

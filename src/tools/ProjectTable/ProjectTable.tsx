@@ -169,11 +169,15 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   return (
     <div className={classes.projectItem}>
       <div className={classes.infoContainer}>
-        <div className={classes.projectName}>{project.name}</div>
+        <div className={classes.projectName}>
+          {project.name.length > 30
+            ? project.name.substring(0, 30) + "..."
+            : project.name}
+        </div>
         <div className={classes.timeInfo}>
           <div className={classes.totalTime}>
             <img
-              height={16}
+              height={20}
               className={classes.icon}
               src={SigmaPNG}
               alt={"Sigma"}
@@ -211,7 +215,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
           {isProjectActivelyTimed ? (
             <div className={classes.timer}>
               <img
-                height={16}
+                height={20}
                 className={classes.icon}
                 src={TimerPNG}
                 alt={"Timer"}
@@ -221,7 +225,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
           ) : (
             <>
               <img
-                height={16}
+                height={20}
                 className={classes.pencil}
                 src={isEditingTime ? checkmark : PencilPNG}
                 alt="Edit"
@@ -246,7 +250,10 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
       <div className={classes.buttonContainer}>
         <Button
           text={giveUpButton}
-          style={{ ...styles.projectItemButton, backgroundColor: "lightcoral" }}
+          style={{
+            ...styles.projectItemButton,
+            backgroundColor: "lightcoral",
+          }}
           onClick={giveUp}
         />
         <Button
@@ -332,6 +339,7 @@ const ProjectTable = (): JSX.Element => {
 const styles: StylesObject = {
   projectItemButton: {
     backgroundColor: "lightgreen",
+    flex: 1,
   },
 };
 
