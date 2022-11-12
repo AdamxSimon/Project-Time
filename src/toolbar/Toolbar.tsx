@@ -1,15 +1,11 @@
 // React
 
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 
 // Context
 
 import { CurrencyContext } from "../context/CurrencyContext";
 import { ProjectContext, ProjectStatus } from "../context/ProjectContext";
-
-// Components
-
-import Button from "../components/Button/Button";
 
 // Assets
 
@@ -22,11 +18,20 @@ import classes from "./styles.module.css";
 
 const Toolbar = (): JSX.Element => {
   const { currency } = useContext(CurrencyContext);
-  const { projects, maxProjects } = useContext(ProjectContext);
+  const { projects, projectsDataRef, uploadProjectData, maxProjects } =
+    useContext(ProjectContext);
+
+  const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
 
   const activeProjects = projects.filter((project) => {
     return project.status === ProjectStatus.Active;
   });
+
+  const handleUpload = (): void => {
+    if (uploadProjectsRef.current) {
+      uploadProjectsRef.current.click();
+    }
+  };
 
   return (
     <div className={classes.toolbar}>
@@ -42,15 +47,31 @@ const Toolbar = (): JSX.Element => {
       </div>
 
       <div className={classes.settingsContainer}>
-        <Button
-          text={"Save"}
-          onClick={() => {}}
-          style={{ backgroundColor: "lightgray" }}
-        />
-        <Button
-          text={"Import"}
-          onClick={() => {}}
-          style={{ backgroundColor: "lightgray" }}
+        <a
+          className={classes.settingsButton}
+          href={projectsDataRef}
+          download={"projects.json"}
+        >
+          {"Save"}
+        </a>
+
+        <div className={classes.settingsButton} onClick={handleUpload}>
+          {"Upload"}
+        </div>
+
+        <input
+          ref={uploadProjectsRef}
+          style={{ display: "none" }}
+          type={"file"}
+          accept={".json"}
+          onChange={async () => {
+            if (uploadProjectsRef?.current?.files) {
+              const file: File = uploadProjectsRef.current.files[0];
+              const fileText: string = await file.text();
+              const projectData = JSON.parse(fileText);
+              uploadProjectData(projectData);
+            }
+          }}
         />
       </div>
     </div>

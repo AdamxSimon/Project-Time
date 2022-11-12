@@ -15,6 +15,8 @@ export enum ProjectStatus {
 
 interface ProjectContextValue {
   projects: Project[];
+  projectsDataRef: string;
+  uploadProjectData: (projectData: Project[]) => void;
   maxProjects: number;
   projectSlotUpgradeCost: number;
   upgradeProjectSlots: () => void;
@@ -50,7 +52,22 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     !initialProjectsSaveData
   );
 
+  const projectsDataRef: string =
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(projects));
+
   const projectSlotUpgradeCost: number = (maxProjects + 1) * 10;
+
+  const uploadProjectData = (projectData: Project[]): void => {
+    const uuids: number[] = projects.map((project) => project.id);
+    const filteredData: Project[] =
+      uuids.length > 0
+        ? projectData.filter((project) => !uuids.includes(project.id))
+        : projectData;
+    console.log({ projectData, filteredData });
+    setProjects([...projects, ...filteredData]);
+    setIsAddingProject(false);
+  };
 
   const addProject = (project: Project): void => {
     setProjects([...projects, project]);
@@ -120,6 +137,8 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
 
   const value: ProjectContextValue = {
     projects,
+    projectsDataRef,
+    uploadProjectData,
     maxProjects,
     projectSlotUpgradeCost,
     upgradeProjectSlots,

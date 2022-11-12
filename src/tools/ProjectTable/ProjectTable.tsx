@@ -73,7 +73,7 @@ const ProjectInputForm = (): JSX.Element => {
         style={{ backgroundColor: "lightgreen" }}
         onClick={() => {
           addProject({
-            id: projects.length + 1,
+            id: Date.now(),
             name: inputRef.current?.value || `Project #${projects.length + 1}`,
             status: ProjectStatus.Active,
             totalSecondsSpent: 0,
