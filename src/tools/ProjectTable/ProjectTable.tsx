@@ -8,6 +8,7 @@ import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 import { CurrencyContext } from "../../context/CurrencyContext";
 import { TimerContext } from "../../context/TimerContext";
 import { ToastContext } from "../../context/ToastContext";
+import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 // Components
 
@@ -96,17 +97,24 @@ const ProjectInputForm = (): JSX.Element => {
 const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   const { project } = props;
 
-  const [isEditingTime, setIsEditingTime] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const [editedName, setEditedName] = useState<string>("");
 
   const [editedHours, setEditedHours] = useState<string>("");
   const [editedMinutes, setEditedMinutes] = useState<string>("");
   const [editedSeconds, setEditedSeconds] = useState<string>("");
 
   const { removeCurrency, addCurrency } = useContext(CurrencyContext);
-  const { completeProject, abandonProject, updateProjectSeconds } =
-    useContext(ProjectContext);
+  const {
+    completeProject,
+    abandonProject,
+    updateProjectName,
+    updateProjectSeconds,
+  } = useContext(ProjectContext);
   const { timedProject, timer } = useContext(TimerContext);
   const { showToast } = useContext(ToastContext);
+  const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const completionReward: number = Math.floor(
     project.totalSecondsSpent / 60 / 2
@@ -130,14 +138,14 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const giveUpButton: JSX.Element = (
     <div className={classes.projectItemButton}>
-      <div>Give Up</div>
+      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{"Abandon"}</div>
       <CurrencyContainer amount={10} />
     </div>
   );
 
   const markCompleteButton: JSX.Element = (
     <div className={classes.projectItemButton}>
-      <div>Mark Complete</div>
+      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{"Complete"}</div>
       <CurrencyContainer amount={completionReward} />
     </div>
   );
@@ -159,33 +167,72 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (isEditingTime) {
+    if (isEditing) {
+      setEditedName(project.name);
       setEditedHours(extractFromDuration(totalTime, "hours"));
       setEditedMinutes(extractFromDuration(totalTime, "minutes"));
       setEditedSeconds(extractFromDuration(totalTime, "seconds"));
     }
-  }, [isEditingTime, totalTime]);
+  }, [isEditing, project.name, totalTime]);
 
   return (
     <div className={classes.projectItem}>
       <div className={classes.infoContainer}>
         <div className={classes.projectName}>
-          {project.name.length > 30
-            ? project.name.substring(0, 30) + "..."
-            : project.name}
+          {isEditing ? (
+            <input
+              className={classes.nameInput}
+              style={{ fontSize: isSmallScreen ? 14 : 20 }}
+              type="text"
+              value={editedName}
+              onChange={(event) => {
+                setEditedName(event.target.value);
+              }}
+              onFocus={handleFocus}
+            />
+          ) : (
+            <div style={{ fontSize: isSmallScreen ? 14 : 20 }}>
+              {project.name}
+            </div>
+          )}
+
+          {!isProjectActivelyTimed && (
+            <img
+              height={isSmallScreen ? 12 : 20}
+              className={classes.pencil}
+              style={{ marginLeft: 8 }}
+              src={isEditing ? checkmark : PencilPNG}
+              alt="Edit"
+              onClick={() => {
+                setIsEditing(!isEditing);
+                if (isEditing) {
+                  updateProjectName(project, editedName);
+                  updateProjectSeconds(
+                    project,
+                    convertDurationToSeconds(
+                      +editedHours || 0,
+                      +editedMinutes || 0,
+                      +editedSeconds || 0
+                    )
+                  );
+                }
+              }}
+            />
+          )}
         </div>
         <div className={classes.timeInfo}>
           <div className={classes.totalTime}>
             <img
-              height={20}
+              height={isSmallScreen ? 12 : 20}
               className={classes.icon}
               src={SigmaPNG}
               alt={"Sigma"}
             />
-            {isEditingTime ? (
+            {isEditing ? (
               <div className={classes.timeEditor}>
                 <input
                   className={classes.timeInput}
+                  style={{ fontSize: isSmallScreen ? 12 : 16 }}
                   type="number"
                   value={editedHours}
                   onChange={(event) => inputHandler(event, setEditedHours)}
@@ -194,6 +241,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                 :
                 <input
                   className={classes.timeInput}
+                  style={{ fontSize: isSmallScreen ? 12 : 16 }}
                   type="number"
                   value={editedMinutes}
                   onChange={(event) => inputHandler(event, setEditedMinutes)}
@@ -202,6 +250,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                 :
                 <input
                   className={classes.timeInput}
+                  style={{ fontSize: isSmallScreen ? 12 : 16 }}
                   type="number"
                   value={editedSeconds}
                   onChange={(event) => inputHandler(event, setEditedSeconds)}
@@ -209,59 +258,44 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                 />
               </div>
             ) : (
-              <div>{totalTime}</div>
+              <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>
+                {totalTime}
+              </div>
             )}
           </div>
-          {isProjectActivelyTimed ? (
+          {isProjectActivelyTimed && (
             <div className={classes.timer}>
               <img
-                height={20}
+                height={isSmallScreen ? 12 : 20}
                 className={classes.icon}
                 src={TimerPNG}
                 alt={"Timer"}
               />
-              <div>{timer}</div>
+              <div style={isSmallScreen ? { fontSize: 12 } : undefined}>
+                {timer}
+              </div>
             </div>
-          ) : (
-            <>
-              <img
-                height={20}
-                className={classes.pencil}
-                src={isEditingTime ? checkmark : PencilPNG}
-                alt="Edit"
-                onClick={() => {
-                  setIsEditingTime(!isEditingTime);
-                  if (isEditingTime) {
-                    updateProjectSeconds(
-                      project,
-                      convertDurationToSeconds(
-                        +editedHours || 0,
-                        +editedMinutes || 0,
-                        +editedSeconds || 0
-                      )
-                    );
-                  }
-                }}
-              />
-            </>
           )}
         </div>
       </div>
-      <div className={classes.buttonContainer}>
-        <Button
-          text={giveUpButton}
-          style={{
-            ...styles.projectItemButton,
-            backgroundColor: "lightcoral",
-          }}
-          onClick={giveUp}
-        />
-        <Button
-          text={markCompleteButton}
-          style={styles.projectItemButton}
-          onClick={markComplete}
-        />
-      </div>
+
+      {!isEditing && (
+        <div className={classes.buttonContainer}>
+          <Button
+            text={giveUpButton}
+            style={{
+              ...styles.projectItemButton,
+              backgroundColor: "lightcoral",
+            }}
+            onClick={giveUp}
+          />
+          <Button
+            text={markCompleteButton}
+            style={styles.projectItemButton}
+            onClick={markComplete}
+          />
+        </div>
+      )}
     </div>
   );
 };

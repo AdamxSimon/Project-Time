@@ -25,6 +25,7 @@ interface ProjectContextValue {
   completeProject: (id: number) => void;
   isAddingProject: boolean;
   setIsAddingProject: React.Dispatch<React.SetStateAction<boolean>>;
+  updateProjectName: (projectToUpdate: Project, name: string) => void;
   updateProjectSeconds: (projectToUpdate: Project, seconds: number) => void;
 }
 
@@ -96,6 +97,20 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     );
   };
 
+  const updateProjectName = (projectToUpdate: Project, name: string): void => {
+    setProjects((projects) =>
+      projects.map((project) => {
+        if (project.id === projectToUpdate.id) {
+          return {
+            ...project,
+            name,
+          };
+        }
+        return project;
+      })
+    );
+  };
+
   const updateProjectSeconds = (
     projectToUpdate: Project,
     seconds: number
@@ -146,6 +161,7 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
     completeProject,
     isAddingProject,
     setIsAddingProject,
+    updateProjectName,
     updateProjectSeconds,
   };
 

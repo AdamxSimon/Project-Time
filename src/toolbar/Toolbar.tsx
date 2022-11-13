@@ -7,6 +7,7 @@ import { useContext, useRef } from "react";
 import { CurrencyContext } from "../context/CurrencyContext";
 import { ProjectContext, ProjectStatus } from "../context/ProjectContext";
 import { TimerContext } from "../context/TimerContext";
+import { ScreenSizeContext } from "../context/ScreenSizeContext";
 
 // Assets
 
@@ -23,6 +24,7 @@ const Toolbar = (): JSX.Element => {
   const { projects, projectsDataRef, uploadProjectData, maxProjects } =
     useContext(ProjectContext);
   const { timer } = useContext(TimerContext);
+  const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,51 +39,66 @@ const Toolbar = (): JSX.Element => {
   };
 
   return (
-    <div className={classes.toolbar}>
+    <div
+      className={classes.toolbar}
+      style={{ justifyContent: isSmallScreen ? "center" : "space-between" }}
+    >
       <div className={classes.infoContainers}>
         <div className={classes.infoContainer}>
-          <img src={ProjectPNG} alt={"ProjectPNG"} height={16} width={16} />
-          <div>{`${activeProjects.length}/${maxProjects}`}</div>
+          <img
+            src={ProjectPNG}
+            alt={"ProjectPNG"}
+            height={isSmallScreen ? 12 : 16}
+          />
+          <div
+            style={{ fontSize: isSmallScreen ? 12 : 16 }}
+          >{`${activeProjects.length} / ${maxProjects}`}</div>
         </div>
         <div className={classes.infoContainer}>
-          <img src={CoinPNG} alt={"CoinPNG"} height={16} width={16} />
-          <div>{currency}</div>
+          <img src={CoinPNG} alt={"CoinPNG"} height={isSmallScreen ? 12 : 16} />
+          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{currency}</div>
         </div>
         <div className={classes.infoContainer}>
-          <img src={TimerPNG} alt={"TimerPNG"} height={16} width={16} />
-          <div>{timer}</div>
+          <img
+            src={TimerPNG}
+            alt={"TimerPNG"}
+            height={isSmallScreen ? 12 : 16}
+          />
+          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{timer}</div>
         </div>
       </div>
 
-      <div className={classes.settingsContainer}>
-        <a
-          className={classes.settingsButton}
-          href={projectsDataRef}
-          download={"projects.json"}
-        >
-          {"Save"}
-        </a>
+      {!isSmallScreen && (
+        <div className={classes.settingsContainer}>
+          <a
+            className={classes.settingsButton}
+            href={projectsDataRef}
+            download={"projects.json"}
+          >
+            {"Save"}
+          </a>
 
-        <div className={classes.settingsButton} onClick={handleUpload}>
-          {"Upload"}
+          <div className={classes.settingsButton} onClick={handleUpload}>
+            {"Upload"}
+          </div>
+
+          <input
+            ref={uploadProjectsRef}
+            style={{ display: "none" }}
+            type={"file"}
+            accept={".json"}
+            onChange={async () => {
+              if (uploadProjectsRef?.current?.files) {
+                const file: File = uploadProjectsRef.current.files[0];
+                const fileText: string = await file.text();
+                const projectData = JSON.parse(fileText);
+                uploadProjectData(projectData);
+                uploadProjectsRef.current.value = "";
+              }
+            }}
+          />
         </div>
-
-        <input
-          ref={uploadProjectsRef}
-          style={{ display: "none" }}
-          type={"file"}
-          accept={".json"}
-          onChange={async () => {
-            if (uploadProjectsRef?.current?.files) {
-              const file: File = uploadProjectsRef.current.files[0];
-              const fileText: string = await file.text();
-              const projectData = JSON.parse(fileText);
-              uploadProjectData(projectData);
-              uploadProjectsRef.current.value = "";
-            }
-          }}
-        />
-      </div>
+      )}
     </div>
   );
 };

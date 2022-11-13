@@ -27,6 +27,7 @@ import { Project } from "../../types";
 
 import classes from "./styles.module.css";
 import { extractFromDuration } from "../../utils";
+import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 interface ProjectSelectorProps {
   selectProject: (project: Project) => void;
@@ -109,6 +110,7 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
 const ProjectTimerForm = (): JSX.Element => {
   const { startTimerSession } = useContext(TimerContext);
   const { showToast } = useContext(ToastContext);
+  const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const [activeMinutes, setActiveMinutes] = useState<number>(25);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
@@ -154,7 +156,7 @@ const ProjectTimerForm = (): JSX.Element => {
 
   const startTimerButton: JSX.Element = (
     <div className={classes.startProjectTimerButton}>
-      <div>Start Timer</div>
+      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>Start Timer</div>
       <CurrencyContainer amount={(activeMinutes || 0) * (cycles || 0)} />
     </div>
   );
@@ -234,6 +236,7 @@ const ProjectTimer = (): JSX.Element => {
   const { isActive, timer, status, stopTimerSession, timerMinutes } =
     useContext(TimerContext);
   const { projects } = useContext(ProjectContext);
+  const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const activeProjects = useMemo(() => {
     return projects.filter((project) => {
@@ -243,7 +246,7 @@ const ProjectTimer = (): JSX.Element => {
 
   const resetTimerButton: JSX.Element = (
     <div className={classes.resetTimerButton}>
-      <div>Give Up</div>
+      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>Give Up</div>
       <CurrencyContainer amount={timerMinutes || 0} />
     </div>
   );
@@ -283,9 +286,10 @@ const ProjectTimer = (): JSX.Element => {
   } else {
     return (
       <div className={classes.projectTimer}>
-        {/* <div className={classes.stage}>{currentStage}</div>
-        <div className={classes.timer}>{timer}</div> */}
-        <div className={classes.timerContainer}>
+        <div
+          className={classes.timerContainer}
+          style={{ height: isSmallScreen ? 200 : 300 }}
+        >
           <img
             className={classes.timerImage}
             src={EmptyTimerPNG}
@@ -293,14 +297,24 @@ const ProjectTimer = (): JSX.Element => {
           />
           <img
             className={classes.ticker}
+            style={{ height: isSmallScreen ? 200 : 300, transform: rotation }}
             src={TickerPNG}
             alt={"Ticker"}
-            style={{ transform: rotation }}
           />
-          <div className={classes.timerInfoContainer}>
+          <div
+            className={classes.timerInfoContainer}
+            style={{
+              border: isSmallScreen ? "2px solid black" : "3px solid black",
+            }}
+          >
             <div className={classes.stage}></div>
-            <div className={classes.duration}>{timer}</div>
-            <div className={classes.status}>{status}</div>
+            <div style={{ fontSize: isSmallScreen ? 16 : 24 }}>{timer}</div>
+            <div
+              className={classes.status}
+              style={{ fontSize: isSmallScreen ? 12 : 16 }}
+            >
+              {status}
+            </div>
           </div>
         </div>
         <Button

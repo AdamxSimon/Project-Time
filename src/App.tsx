@@ -1,3 +1,11 @@
+// React
+
+import { useContext } from "react";
+
+// Context
+
+import { ScreenSizeContext } from "./context/ScreenSizeContext";
+
 // Components
 
 import Carousel from "./carousel/Carousel";
@@ -27,6 +35,8 @@ const carouselItems: CarouselItem[] = [
 ];
 
 const App = (): JSX.Element => {
+  const { isUnsupported } = useContext(ScreenSizeContext);
+
   return (
     <div className={classes.app}>
       <Toolbar />
@@ -36,6 +46,10 @@ const App = (): JSX.Element => {
 
       <ModalOverlay />
       <ToastOverlay />
+
+      {isUnsupported && (
+        <div className={classes.unsupported}>{"Screen Size Unsupported"}</div>
+      )}
     </div>
   );
 };
