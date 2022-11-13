@@ -13,6 +13,7 @@ import {
 
 import { ProjectContext, ProjectStatus } from "./ProjectContext";
 import { CurrencyContext } from "./CurrencyContext";
+import { ToastContext } from "./ToastContext";
 
 // Utils
 
@@ -21,7 +22,6 @@ import { convertSecondsToDuration } from "../utils";
 // Types
 
 import { Project } from "../types";
-import { ToastContext } from "./ToastContext";
 
 enum TimerStatus {
   Active = "Active",
@@ -36,7 +36,7 @@ export enum ReasonTimerStopped {
 
 interface TimerContextValue {
   isActive: boolean;
-  timer: string | null;
+  timer: string;
   status: TimerStatus;
   startTimerSession: (
     activeMinutes: number,
@@ -58,7 +58,7 @@ interface TimerProviderProps {
 
 const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
   const [isActive, setIsActive] = useState<boolean>(false);
-  const [timer, setTimer] = useState<string | null>(null);
+  const [timer, setTimer] = useState<string>("00:00:00");
   const [status, setStatus] = useState<TimerStatus>(TimerStatus.Inactive);
   const [timedProject, setTimedProject] = useState<Project | null>(null);
   const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
@@ -126,7 +126,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       setIsActive(false);
       setTimedProject(null);
       setStatus(TimerStatus.Inactive);
-      setTimer(null);
+      setTimer("00:00:00");
       clearInterval(intervalRef.current);
       startTimeRef.current = null;
       stagesRef.current = [];

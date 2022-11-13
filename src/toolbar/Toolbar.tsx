@@ -6,11 +6,13 @@ import { useContext, useRef } from "react";
 
 import { CurrencyContext } from "../context/CurrencyContext";
 import { ProjectContext, ProjectStatus } from "../context/ProjectContext";
+import { TimerContext } from "../context/TimerContext";
 
 // Assets
 
-import projectsIcon from "../assets/projects.png";
-import coinIcon from "../assets/coin.png";
+import ProjectPNG from "../assets/projects.png";
+import CoinPNG from "../assets/coin.png";
+import TimerPNG from "../assets/timer.png";
 
 // Styles
 
@@ -20,6 +22,7 @@ const Toolbar = (): JSX.Element => {
   const { currency } = useContext(CurrencyContext);
   const { projects, projectsDataRef, uploadProjectData, maxProjects } =
     useContext(ProjectContext);
+  const { timer } = useContext(TimerContext);
 
   const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,12 +40,16 @@ const Toolbar = (): JSX.Element => {
     <div className={classes.toolbar}>
       <div className={classes.infoContainers}>
         <div className={classes.infoContainer}>
-          <img src={projectsIcon} alt="Projects" height={16} width={16} />
+          <img src={ProjectPNG} alt={"ProjectPNG"} height={16} width={16} />
           <div>{`${activeProjects.length}/${maxProjects}`}</div>
         </div>
         <div className={classes.infoContainer}>
-          <img src={coinIcon} alt="Currency" height={16} width={16} />
+          <img src={CoinPNG} alt={"CoinPNG"} height={16} width={16} />
           <div>{currency}</div>
+        </div>
+        <div className={classes.infoContainer}>
+          <img src={TimerPNG} alt={"TimerPNG"} height={16} width={16} />
+          <div>{timer}</div>
         </div>
       </div>
 
