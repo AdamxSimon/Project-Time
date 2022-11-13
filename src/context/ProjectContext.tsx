@@ -64,7 +64,6 @@ const ProjectProvider = ({ children }: ProjectProviderProps): JSX.Element => {
       uuids.length > 0
         ? projectData.filter((project) => !uuids.includes(project.id))
         : projectData;
-    console.log({ projectData, filteredData });
     setProjects([...projects, ...filteredData]);
     setIsAddingProject(false);
   };

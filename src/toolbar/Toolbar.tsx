@@ -77,6 +77,7 @@ const Toolbar = (): JSX.Element => {
               const fileText: string = await file.text();
               const projectData = JSON.parse(fileText);
               uploadProjectData(projectData);
+              uploadProjectsRef.current.value = "";
             }
           }}
         />
