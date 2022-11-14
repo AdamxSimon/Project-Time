@@ -25,13 +25,14 @@ import TimerPNG from "./assets/timer.png";
 import classes from "./styles.module.css";
 
 export interface CarouselItem {
+  id: number;
   component: React.ReactElement;
   icon: string;
 }
 
 const carouselItems: CarouselItem[] = [
-  { component: <ProjectTable />, icon: ProjectsPNG },
-  { component: <ProjectTimer />, icon: TimerPNG },
+  { id: 1, component: <ProjectTable />, icon: ProjectsPNG },
+  { id: 2, component: <ProjectTimer />, icon: TimerPNG },
 ];
 
 const App = (): JSX.Element => {

@@ -17,45 +17,31 @@ interface CarouselProps {
 const Carousel = (props: CarouselProps): JSX.Element => {
   const { items } = props;
 
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-
-  const cycleBackward = () => {
-    if (selectedIndex === 0) {
-      setSelectedIndex(items.length - 1);
-    } else {
-      setSelectedIndex((previousIndex) => (previousIndex -= 1));
-    }
-  };
-
-  const cycleForward = () => {
-    if (selectedIndex === items.length - 1) {
-      setSelectedIndex(0);
-    } else {
-      setSelectedIndex((previousIndex) => (previousIndex += 1));
-    }
-  };
-
-  const backIcon: string =
-    selectedIndex === 0
-      ? items[items.length - 1].icon
-      : items[selectedIndex - 1].icon;
-
-  const forwardIcon: string =
-    selectedIndex === items.length - 1
-      ? items[0].icon
-      : items[selectedIndex + 1].icon;
+  const [selectedItem, setSelectedItem] = useState<CarouselItem>(items[0]);
 
   return (
     <div className={classes.carouselContainer}>
       <div className={classes.carousel}>
-        <div className={classes.directionButton} onClick={cycleBackward}>
-          <img src={backIcon} alt="Back" height={16} />
-        </div>
         <div className={classes.componentContainer}>
-          {items[selectedIndex].component}
+          {selectedItem.component}
         </div>
-        <div className={classes.directionButton} onClick={cycleForward}>
-          <img src={forwardIcon} alt="Forward" height={16} />
+        <div className={classes.navigationContainer}>
+          {items.map((item) => {
+            return (
+              <div
+                key={item.id}
+                className={classes.navigationButton}
+                style={
+                  item.id === selectedItem.id
+                    ? { backgroundColor: "lightgreen" }
+                    : undefined
+                }
+                onClick={() => setSelectedItem(item)}
+              >
+                <img src={item.icon} alt={item.icon} height={16} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
