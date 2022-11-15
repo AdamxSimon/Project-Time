@@ -168,7 +168,7 @@ const ProjectTimerForm = (): JSX.Element => {
   }, [cycles]);
 
   return (
-    <>
+    <div className={classes.projectTimerForm}>
       <div className={classes.header}>{"Choose A Project"}</div>
       <ProjectSelector selectProject={selectProjectHandler} />
       <div className={classes.header}>{"Set Timer"}</div>
@@ -228,7 +228,7 @@ const ProjectTimerForm = (): JSX.Element => {
         style={{ backgroundColor: "lightgreen" }}
         disabled={!activeMinutes || !cycles}
       />
-    </>
+    </div>
   );
 };
 
@@ -278,11 +278,7 @@ const ProjectTimer = (): JSX.Element => {
   }
 
   if (!isActive) {
-    return (
-      <div className={classes.projectTimer}>
-        <ProjectTimerForm />
-      </div>
-    );
+    return <ProjectTimerForm />;
   } else {
     return (
       <div className={classes.projectTimer}>

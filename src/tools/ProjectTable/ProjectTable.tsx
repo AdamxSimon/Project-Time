@@ -327,11 +327,7 @@ const ProjectTable = (): JSX.Element => {
   }, [projects, activeFilters]);
 
   if (isAddingProject) {
-    return (
-      <div className={classes.projectTable}>
-        <ProjectInputForm />
-      </div>
-    );
+    return <ProjectInputForm />;
   } else {
     return (
       <>
