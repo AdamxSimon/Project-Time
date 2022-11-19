@@ -17,11 +17,11 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 
 // Assets
 
-import SigmaPNG from "../../assets/sigma.png";
-import TimerPNG from "../../assets/timer.png";
-import PencilPNG from "../../assets/pencil.png";
-import checkmark from "../../assets/checkmark.png";
-import close from "../../assets/close.png";
+import CheckmarkPNG from "../../assets/general/checkmark.png";
+import CloseButtonPNG from "../../assets/general/close-button.png";
+import PencilPNG from "../../assets/general/pencil.png";
+import SigmaPNG from "../../assets/timer/sigma.png";
+import TimerPNG from "../../assets/timer/timer.png";
 
 // Utils
 
@@ -84,7 +84,7 @@ const ProjectInputForm = (): JSX.Element => {
       {activeProjects.length !== 0 && (
         <img
           className={classes.closeButton}
-          src={close}
+          src={CloseButtonPNG}
           alt={"Close"}
           height={20}
           onClick={() => setIsAddingProject(false)}
@@ -201,7 +201,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
               height={isSmallScreen ? 12 : 20}
               className={classes.pencil}
               style={{ marginLeft: 8 }}
-              src={isEditing ? checkmark : PencilPNG}
+              src={isEditing ? CheckmarkPNG : PencilPNG}
               alt="Edit"
               onClick={() => {
                 setIsEditing(!isEditing);

@@ -11,9 +11,9 @@ import { ScreenSizeContext } from "../context/ScreenSizeContext";
 
 // Assets
 
-import ProjectPNG from "../assets/projects.png";
-import CoinPNG from "../assets/coin.png";
-import TimerPNG from "../assets/timer.png";
+import CoinPNG from "../assets/currency/coin.png";
+import ProjectPNG from "../assets/projects/projects-sheet.png";
+import TimerPNG from "../assets/timer/timer.png";
 
 // Styles
 

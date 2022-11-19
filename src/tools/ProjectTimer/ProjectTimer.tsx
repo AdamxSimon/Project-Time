@@ -15,9 +15,9 @@ import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContai
 
 // Assets
 
-import EmptyTimerPNG from "../../assets/empty-timer.png";
-import TickerPNG from "../../assets/ticker.png";
-import DropdownArrowPNG from "../../assets/dropdown-arrow.png";
+import DropdownArrowPNG from "../../assets/general/dropdown-arrow.png";
+import EmptyTimerPNG from "../../assets/timer/empty-timer.png";
+import TimerTickerPNG from "../../assets/timer/timer-ticker.png";
 
 // Types
 
@@ -294,7 +294,7 @@ const ProjectTimer = (): JSX.Element => {
           <img
             className={classes.ticker}
             style={{ height: isSmallScreen ? 200 : 300, transform: rotation }}
-            src={TickerPNG}
+            src={TimerTickerPNG}
             alt={"Ticker"}
           />
           <div

@@ -17,8 +17,8 @@ import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
 
 // Assets
 
-import ProjectsPNG from "./assets/projects.png";
-import TimerPNG from "./assets/timer.png";
+import ProjectsSheetPNG from "./assets/projects/projects-sheet.png";
+import TimerPNG from "./assets/timer/timer.png";
 
 // Styles
 
@@ -31,7 +31,7 @@ export interface CarouselItem {
 }
 
 const carouselItems: CarouselItem[] = [
-  { id: 1, component: <ProjectTable />, icon: ProjectsPNG },
+  { id: 1, component: <ProjectTable />, icon: ProjectsSheetPNG },
   { id: 2, component: <ProjectTimer />, icon: TimerPNG },
 ];
 

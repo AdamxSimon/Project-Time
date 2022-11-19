@@ -8,7 +8,7 @@ import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 // Assets
 
-import coinIcon from "../../assets/coin.png";
+import CoinPNG from "../../assets/currency/coin.png";
 
 // Styles
 
@@ -25,7 +25,7 @@ const CurrencyContainer = (props: CurrencyContainerProps): JSX.Element => {
 
   return (
     <div className={classes.currencyContainer}>
-      <img src={coinIcon} alt="Currency" height={isSmallScreen ? 12 : 16} />
+      <img src={CoinPNG} alt="Currency" height={isSmallScreen ? 12 : 16} />
       <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{amount}</div>
     </div>
   );
