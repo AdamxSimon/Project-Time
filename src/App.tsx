@@ -8,32 +8,17 @@ import { ScreenSizeContext } from "./context/ScreenSizeContext";
 
 // Components
 
-import Carousel from "./carousel/Carousel";
+import NavigationCarousel from "./navigation-carousel/NavigationCarousel";
 import Toolbar from "./toolbar/Toolbar";
-import ProjectTable from "./tools/ProjectTable/ProjectTable";
-import ProjectTimer from "./tools/ProjectTimer/ProjectTimer";
+
+// Overlays
+
 import ModalOverlay from "./overlays/modal-overlay/ModalOverlay";
 import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
-
-// Assets
-
-import ProjectsSheetPNG from "./assets/projects/projects-sheet.png";
-import TimerPNG from "./assets/timer/timer.png";
 
 // Styles
 
 import classes from "./styles.module.css";
-
-export interface CarouselItem {
-  id: number;
-  component: React.ReactElement;
-  icon: string;
-}
-
-const carouselItems: CarouselItem[] = [
-  { id: 1, component: <ProjectTable />, icon: ProjectsSheetPNG },
-  { id: 2, component: <ProjectTimer />, icon: TimerPNG },
-];
 
 const App = (): JSX.Element => {
   const { isUnsupported } = useContext(ScreenSizeContext);
@@ -41,7 +26,7 @@ const App = (): JSX.Element => {
   return (
     <div className={classes.app}>
       <Toolbar />
-      <Carousel items={carouselItems} />
+      <NavigationCarousel />
 
       {/* Overlays */}
 

@@ -1,4 +1,4 @@
-.carouselContainer {
+.navigationCarouselContainer {
   flex: 1;
   position: relative;
   display: flex;
@@ -6,15 +6,16 @@
   align-items: center;
 }
 
-.carousel {
+.navigationCarousel {
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 16px;
 }
 
-.componentContainer {
+.carouselComponentContainer {
   height: 400px;
   width: 1000px;
   background-color: white;
@@ -25,21 +26,20 @@
   overflow: scroll;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  transition: box-shadow 0.2s;
 }
 
-.componentContainer::-webkit-scrollbar {
+.carouselComponentContainer::-webkit-scrollbar {
   display: none;
 }
 
-.navigationContainer {
+.navigationButtonsContainer {
   display: flex;
   gap: 16px;
 }
 
 .navigationButton {
   height: 40px;
-  min-width: 40px;
+  width: 40px;
   background-color: white;
   border-radius: 50%;
   box-shadow: 0 0 8px gray;
@@ -47,7 +47,6 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: box-shadow 0.2s;
 }
 
 .navigationButton:active {
@@ -55,40 +54,31 @@
 }
 
 @media screen and (max-width: 1000px), screen and (max-height: 520px) {
-  .carousel {
-    width: 100%;
+  .navigationCarousel {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    flex: 1;
     gap: 0;
   }
 
-  .componentContainer {
+  .carouselComponentContainer {
     width: 100%;
     border-radius: 0;
     box-shadow: none;
     flex: 1;
   }
 
-  .navigationContainer {
-    height: fit-content;
+  .navigationButtonsContainer {
     width: 100%;
     gap: 0;
   }
 
   .navigationButton {
-    height: 40px;
     flex: 1;
     background-color: lightgray;
     border-radius: 0;
     box-shadow: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    cursor: pointer;
   }
 }
