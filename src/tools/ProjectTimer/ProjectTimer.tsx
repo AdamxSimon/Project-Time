@@ -7,17 +7,21 @@ import React, { useState, useContext, useMemo, useEffect, useRef } from "react";
 import { ReasonTimerStopped, TimerContext } from "../../context/TimerContext";
 import { ProjectContext, ProjectStatus } from "../../context/ProjectContext";
 import { ToastContext } from "../../context/ToastContext";
+import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 // Components
 
-import Button from "../../components/Button/Button";
-import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContainer";
+import CurrencyButton from "../../components/currency-button/CurrencyButton";
 
 // Assets
 
 import DropdownArrowPNG from "../../assets/general/dropdown-arrow.png";
 import EmptyTimerPNG from "../../assets/timer/empty-timer.png";
 import TimerTickerPNG from "../../assets/timer/timer-ticker.png";
+
+// Utils
+
+import { extractFromDuration } from "../../utils";
 
 // Types
 
@@ -26,8 +30,6 @@ import { Project } from "../../types";
 // Styles
 
 import classes from "./styles.module.css";
-import { extractFromDuration } from "../../utils";
-import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 interface ProjectSelectorProps {
   selectProject: (project: Project) => void;
@@ -110,7 +112,6 @@ const ProjectSelector = (props: ProjectSelectorProps): JSX.Element => {
 const ProjectTimerForm = (): JSX.Element => {
   const { startTimerSession } = useContext(TimerContext);
   const { showToast } = useContext(ToastContext);
-  const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const [activeMinutes, setActiveMinutes] = useState<number>(25);
   const [breakMinutes, setBreakMinutes] = useState<number>(5);
@@ -153,13 +154,6 @@ const ProjectTimerForm = (): JSX.Element => {
       (breakMinutes || 0);
     return calculation < 0 ? 0 : calculation;
   }, [activeMinutes, breakMinutes, cycles]);
-
-  const startTimerButton: JSX.Element = (
-    <div className={classes.startProjectTimerButton}>
-      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>Start Timer</div>
-      <CurrencyContainer amount={(activeMinutes || 0) * (cycles || 0)} />
-    </div>
-  );
 
   useEffect(() => {
     if (cycles === 1) {
@@ -215,8 +209,9 @@ const ProjectTimerForm = (): JSX.Element => {
           <div className={classes.totalTime}>{totalTimeInMinutes}</div>
         </div>
       </div>
-      <Button
-        text={startTimerButton}
+      <CurrencyButton
+        text={"Start Timer"}
+        currencyAmount={(activeMinutes || 0) * (cycles || 0)}
         onClick={() =>
           startTimerSession(
             activeMinutes,
@@ -225,7 +220,6 @@ const ProjectTimerForm = (): JSX.Element => {
             timedProjectRef.current as Project
           )
         }
-        style={{ backgroundColor: "lightgreen" }}
         disabled={!activeMinutes || !cycles}
       />
     </div>
@@ -243,13 +237,6 @@ const ProjectTimer = (): JSX.Element => {
       return project.status === ProjectStatus.Active;
     });
   }, [projects]);
-
-  const resetTimerButton: JSX.Element = (
-    <div className={classes.resetTimerButton}>
-      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>Give Up</div>
-      <CurrencyContainer amount={timerMinutes || 0} />
-    </div>
-  );
 
   const getRotation = (): string => {
     if (!timer) {
@@ -313,11 +300,12 @@ const ProjectTimer = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <Button
-          text={resetTimerButton}
+        <CurrencyButton
+          text={"Give Up"}
+          currencyAmount={timerMinutes || 0}
           onClick={() => stopTimerSession(ReasonTimerStopped.Canceled)}
-          style={{ backgroundColor: "lightcoral" }}
-        ></Button>
+          isCostly
+        />
       </div>
     );
   }

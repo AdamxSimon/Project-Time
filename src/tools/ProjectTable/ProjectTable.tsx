@@ -12,8 +12,7 @@ import { ScreenSizeContext } from "../../context/ScreenSizeContext";
 
 // Components
 
-import Button from "../../components/Button/Button";
-import CurrencyContainer from "../../components/CurrencyContainer/CurrencyContainer";
+import CurrencyButton from "../../components/currency-button/CurrencyButton";
 
 // Assets
 
@@ -33,7 +32,7 @@ import {
 
 // Types
 
-import { Project, StylesObject } from "../../types";
+import { Project } from "../../types";
 
 // Styles
 
@@ -53,13 +52,6 @@ const ProjectInputForm = (): JSX.Element => {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const buttonText: JSX.Element = (
-    <div className={classes.addProjectFormButton}>
-      <div>Add Project</div>
-      <CurrencyContainer amount={10} />
-    </div>
-  );
-
   return (
     <div className={classes.inputForm}>
       <div className={classes.inputHeader}>What Would You Like To Work On?</div>
@@ -69,9 +61,9 @@ const ProjectInputForm = (): JSX.Element => {
         type="text"
         placeholder="Project Name"
       />
-      <Button
-        text={buttonText}
-        style={{ backgroundColor: "lightgreen" }}
+      <CurrencyButton
+        text={"Add Project"}
+        currencyAmount={10}
         onClick={() => {
           addProject({
             id: Date.now(),
@@ -135,20 +127,6 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   }, [project.id, timedProject?.id]);
 
   const totalTime: string = convertSecondsToDuration(project.totalSecondsSpent);
-
-  const giveUpButton: JSX.Element = (
-    <div className={classes.projectItemButton}>
-      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{"Abandon"}</div>
-      <CurrencyContainer amount={10} />
-    </div>
-  );
-
-  const markCompleteButton: JSX.Element = (
-    <div className={classes.projectItemButton}>
-      <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{"Complete"}</div>
-      <CurrencyContainer amount={completionReward} />
-    </div>
-  );
 
   const inputHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -281,17 +259,15 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
       {!isEditing && (
         <div className={classes.buttonContainer}>
-          <Button
-            text={giveUpButton}
-            style={{
-              ...styles.projectItemButton,
-              backgroundColor: "lightcoral",
-            }}
+          <CurrencyButton
+            text={"Abandon"}
+            currencyAmount={10}
             onClick={giveUp}
+            isCostly
           />
-          <Button
-            text={markCompleteButton}
-            style={styles.projectItemButton}
+          <CurrencyButton
+            text={"Complete"}
+            currencyAmount={completionReward}
             onClick={markComplete}
           />
         </div>
@@ -312,9 +288,10 @@ const ProjectTable = (): JSX.Element => {
   const { currency } = useContext(CurrencyContext);
   const { showToast } = useContext(ToastContext);
 
-  const [activeFilters, setActiveFilters] = useState<ProjectStatus[]>([
-    ProjectStatus.Active,
-  ]);
+  const activeFilters: ProjectStatus[] = useMemo(
+    () => [ProjectStatus.Active],
+    []
+  );
 
   const activeProjects: Project[] = projects.filter(
     (project) => project.status === ProjectStatus.Active
@@ -336,8 +313,16 @@ const ProjectTable = (): JSX.Element => {
             return <ProjectItem key={project.id} project={project} />;
           })}
         </div>
-        <div
-          className={classes.addProjectButton}
+
+        <CurrencyButton
+          text={
+            activeProjects.length === maxProjects
+              ? "Upgrade Project Slots"
+              : "Add Project"
+          }
+          currencyAmount={
+            activeProjects.length === maxProjects ? projectSlotUpgradeCost : 10
+          }
           onClick={() => {
             if (activeProjects.length !== maxProjects) {
               setIsAddingProject(true);
@@ -347,30 +332,19 @@ const ProjectTable = (): JSX.Element => {
               showToast("Not Enough Coins!");
             }
           }}
-          style={{
-            backgroundColor:
-              activeProjects.length === maxProjects ? "lightcoral" : "white",
+          isCostly={activeProjects.length === maxProjects}
+          styleOverrides={{
+            width: "max-content",
+            position: "absolute",
+            bottom: 8,
+            left: "50%",
+            right: "50%",
+            transform: "translate(-50%)",
           }}
-        >
-          <div>
-            {activeProjects.length === maxProjects
-              ? "Upgrade Project Slots"
-              : "Add Project"}
-          </div>
-          {activeProjects.length === maxProjects && (
-            <CurrencyContainer amount={projectSlotUpgradeCost} />
-          )}
-        </div>
+        />
       </>
     );
   }
-};
-
-const styles: StylesObject = {
-  projectItemButton: {
-    backgroundColor: "lightgreen",
-    flex: 1,
-  },
 };
 
 export default ProjectTable;

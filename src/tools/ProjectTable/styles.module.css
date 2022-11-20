@@ -168,30 +168,6 @@
   gap: 12px;
 }
 
-.addProjectButton {
-  max-height: 40px;
-  width: max-content;
-  padding: 8px;
-  border-radius: 8px;
-  box-shadow: 0 0 8px gray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  right: 50%;
-  transform: translate(-50%);
-  cursor: pointer;
-  user-select: none;
-  transition: box-shadow 0.2s;
-}
-
-.addProjectButton:active {
-  box-shadow: 0 0 2px black;
-}
-
 .closeButton {
   position: absolute;
   top: 16px;
