@@ -11,22 +11,24 @@ interface CurrencyContextValue {
 const initialSaveData: string | null = localStorage.getItem("currency");
 
 export const CurrencyContext: React.Context<CurrencyContextValue> =
-  createContext<CurrencyContextValue>({} as CurrencyContextValue);
+  createContext<CurrencyContextValue>({
+    currency: 0,
+    addCurrency: () => {},
+    removeCurrency: () => {},
+  });
 
 interface CurrencyProviderProps {
   children: JSX.Element;
 }
 
 const CurrencyProvider = ({ children }: CurrencyProviderProps): JSX.Element => {
-  const [currency, setCurrency] = useState<number>(
-    initialSaveData ? +initialSaveData : 0
-  );
+  const [currency, setCurrency] = useState<number>(Number(initialSaveData));
 
-  const addCurrency = (amount: number) => {
+  const addCurrency = (amount: number): void => {
     setCurrency(currency + amount);
   };
 
-  const removeCurrency = (amount: number) => {
+  const removeCurrency = (amount: number): void => {
     const result: number = currency - amount;
     setCurrency(result > 0 ? result : 0);
   };
