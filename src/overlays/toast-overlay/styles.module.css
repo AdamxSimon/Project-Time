@@ -1,4 +1,4 @@
-.toast {
+.toastOverlay {
   min-width: fit-content;
   background-color: royalblue;
   padding: 8px;
@@ -9,13 +9,12 @@
   right: 50%;
   transform: translate(-50%);
   text-align: center;
-  color: white;
-  overflow: hidden;
   white-space: nowrap;
-  z-index: 3;
+  color: white;
   animation-duration: 0.2s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
+  z-index: 3;
 }
 
 .drop {

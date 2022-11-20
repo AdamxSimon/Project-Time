@@ -34,7 +34,7 @@ const ToastOverlay = (): JSX.Element | null => {
     return (
       <div
         className={combineClassNames(
-          classes.toast,
+          classes.toastOverlay,
           isRising ? classes.rise : classes.drop
         )}
         onAnimationEnd={onAnimationEnd}
@@ -42,9 +42,9 @@ const ToastOverlay = (): JSX.Element | null => {
         {message}
       </div>
     );
-  } else {
-    return null;
   }
+
+  return null;
 };
 
 export default ToastOverlay;

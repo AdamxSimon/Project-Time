@@ -13,7 +13,6 @@ import Toolbar from "./toolbar/Toolbar";
 
 // Overlays
 
-import ModalOverlay from "./overlays/modal-overlay/ModalOverlay";
 import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
 
 // Styles
@@ -30,7 +29,6 @@ const App = (): JSX.Element => {
 
       {/* Overlays */}
 
-      <ModalOverlay />
       <ToastOverlay />
 
       {isUnsupported && (
