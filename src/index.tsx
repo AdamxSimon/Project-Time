@@ -6,7 +6,6 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 import CurrencyProvider from "./context/CurrencyContext";
-import ModalProvider from "./context/ModalContext";
 import ProjectProvider from "./context/ProjectContext";
 import ScreenSizeProvider from "./context/ScreenSizeContext";
 import TimerProvider from "./context/TimerContext";
@@ -22,16 +21,14 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <ScreenSizeProvider>
-    <ModalProvider>
-      <ToastProvider>
-        <CurrencyProvider>
-          <ProjectProvider>
-            <TimerProvider>
-              <App />
-            </TimerProvider>
-          </ProjectProvider>
-        </CurrencyProvider>
-      </ToastProvider>
-    </ModalProvider>
+    <ToastProvider>
+      <CurrencyProvider>
+        <ProjectProvider>
+          <TimerProvider>
+            <App />
+          </TimerProvider>
+        </ProjectProvider>
+      </CurrencyProvider>
+    </ToastProvider>
   </ScreenSizeProvider>
 );
