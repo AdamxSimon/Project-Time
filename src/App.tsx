@@ -20,7 +20,7 @@ import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
 import classes from "./styles.module.css";
 
 const App = (): JSX.Element => {
-  const { isUnsupported } = useContext(ScreenSizeContext);
+  const { isScreenUnsupported } = useContext(ScreenSizeContext);
 
   return (
     <div className={classes.app}>
@@ -31,7 +31,7 @@ const App = (): JSX.Element => {
 
       <ToastOverlay />
 
-      {isUnsupported && (
+      {isScreenUnsupported && (
         <div className={classes.unsupported}>{"Screen Size Unsupported"}</div>
       )}
     </div>

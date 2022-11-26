@@ -1,6 +1,12 @@
 // React
 
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 interface CurrencyContextValue {
   currency: number;
@@ -24,20 +30,28 @@ interface CurrencyProviderProps {
 const CurrencyProvider = ({ children }: CurrencyProviderProps): JSX.Element => {
   const [currency, setCurrency] = useState<number>(Number(initialSaveData));
 
-  const addCurrency = (amount: number): void => {
-    setCurrency(currency + amount);
-  };
+  const addCurrency = useCallback(
+    (amount: number): void => {
+      setCurrency(currency + amount);
+    },
+    [currency]
+  );
 
-  const removeCurrency = (amount: number): void => {
-    const result: number = currency - amount;
-    setCurrency(result > 0 ? result : 0);
-  };
+  const removeCurrency = useCallback(
+    (amount: number): void => {
+      const result: number = currency - amount;
+      setCurrency(result > 0 ? result : 0);
+    },
+    [currency]
+  );
 
-  useEffect(() => {
+  useEffect((): void => {
     localStorage.setItem("currency", currency.toString());
   }, [currency]);
 
-  const value: CurrencyContextValue = { currency, addCurrency, removeCurrency };
+  const value: CurrencyContextValue = useMemo(() => {
+    return { currency, addCurrency, removeCurrency };
+  }, [currency, addCurrency, removeCurrency]);
 
   return (
     <CurrencyContext.Provider value={value}>

@@ -1,16 +1,21 @@
 // React
 
-import { createContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
+
+const SMALL_SCREEN_WIDTH = 420;
+
+const UNSUPPORTED_SCREEN_WIDTH = 320;
+const UNSUPPORTED_SCREEN_HEIGHT = 240;
 
 interface ScreenSizeContextValue {
   isSmallScreen: boolean;
-  isUnsupported: boolean;
+  isScreenUnsupported: boolean;
 }
 
 export const ScreenSizeContext: React.Context<ScreenSizeContextValue> =
   createContext<ScreenSizeContextValue>({
-    isSmallScreen: window.screen.width <= 420,
-    isUnsupported: window.screen.width <= 320,
+    isSmallScreen: false,
+    isScreenUnsupported: false,
   });
 
 interface ScreenSizeProviderProps {
@@ -21,22 +26,26 @@ const ScreenSizeProvider = ({
   children,
 }: ScreenSizeProviderProps): JSX.Element => {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(
-    window.screen.width <= 420
+    window.screen.width <= SMALL_SCREEN_WIDTH
   );
-  const [isUnsupported, setIsUnsupported] = useState<boolean>(
-    window.screen.width <= 320
+  const [isScreenUnsupported, setIsScreenUnsupported] = useState<boolean>(
+    window.screen.width <= UNSUPPORTED_SCREEN_WIDTH ||
+      window.screen.height <= UNSUPPORTED_SCREEN_HEIGHT
   );
 
-  const value: ScreenSizeContextValue = useMemo(() => {
-    return { isSmallScreen, isUnsupported };
-  }, [isSmallScreen, isUnsupported]);
-
-  useEffect(() => {
+  useEffect((): void => {
     window.addEventListener("resize", () => {
-      setIsSmallScreen(window.screen.width <= 420);
-      setIsUnsupported(window.screen.width <= 320);
+      setIsSmallScreen(window.screen.width <= SMALL_SCREEN_WIDTH);
+      setIsScreenUnsupported(
+        window.screen.width <= UNSUPPORTED_SCREEN_WIDTH ||
+          window.screen.height <= UNSUPPORTED_SCREEN_HEIGHT
+      );
     });
   }, []);
+
+  const value: ScreenSizeContextValue = useMemo(() => {
+    return { isSmallScreen, isScreenUnsupported };
+  }, [isSmallScreen, isScreenUnsupported]);
 
   return (
     <ScreenSizeContext.Provider value={value}>

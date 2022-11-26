@@ -23,7 +23,7 @@ const Toolbar = (): JSX.Element => {
   const { currency } = useContext(CurrencyContext);
   const { projects, projectsDataRef, uploadProjectData, maxProjects } =
     useContext(ProjectContext);
-  const { timer } = useContext(TimerContext);
+  const { timerAsDuration } = useContext(TimerContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
 
   const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
@@ -64,7 +64,9 @@ const Toolbar = (): JSX.Element => {
             alt={"TimerPNG"}
             height={isSmallScreen ? 12 : 16}
           />
-          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{timer}</div>
+          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>
+            {timerAsDuration}
+          </div>
         </div>
       </div>
 

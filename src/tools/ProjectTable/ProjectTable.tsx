@@ -97,14 +97,14 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
   const [editedMinutes, setEditedMinutes] = useState<string>("");
   const [editedSeconds, setEditedSeconds] = useState<string>("");
 
-  const { removeCurrency, addCurrency } = useContext(CurrencyContext);
+  const { addCurrency } = useContext(CurrencyContext);
   const {
     completeProject,
     abandonProject,
     updateProjectName,
     updateProjectSeconds,
   } = useContext(ProjectContext);
-  const { timedProject, timer } = useContext(TimerContext);
+  const { timedProject, timerAsDuration } = useContext(TimerContext);
   const { showToast } = useContext(ToastContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
 
@@ -114,7 +114,6 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
 
   const giveUp = (): void => {
     abandonProject(project.id);
-    removeCurrency(10);
   };
 
   const markComplete = (): void => {
@@ -250,7 +249,7 @@ const ProjectItem = (props: ProjectItemProps): JSX.Element => {
                 alt={"Timer"}
               />
               <div style={isSmallScreen ? { fontSize: 12 } : undefined}>
-                {timer}
+                {timerAsDuration}
               </div>
             </div>
           )}

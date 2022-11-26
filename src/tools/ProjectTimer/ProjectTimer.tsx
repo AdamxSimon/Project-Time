@@ -227,8 +227,15 @@ const ProjectTimerForm = (): JSX.Element => {
 };
 
 const ProjectTimer = (): JSX.Element => {
-  const { isActive, timer, status, stopTimerSession, timerMinutes } =
-    useContext(TimerContext);
+  const {
+    isTimerActive,
+    timerAsDuration,
+    timerStatus,
+    totalTimerCycles,
+    currentTimerCycle,
+    stopTimerSession,
+    timerReward,
+  } = useContext(TimerContext);
   const { projects } = useContext(ProjectContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
 
@@ -239,11 +246,13 @@ const ProjectTimer = (): JSX.Element => {
   }, [projects]);
 
   const getRotation = (): string => {
-    if (!timer) {
+    if (!timerAsDuration) {
       return `rotate(0deg)`;
     }
 
-    const seconds: number = Number(extractFromDuration(timer, "seconds"));
+    const seconds: number = Number(
+      extractFromDuration(timerAsDuration, "seconds")
+    );
     const secondsElapsed: number = 60 - seconds;
     const proportion: number = secondsElapsed / 60;
     const rotationDegrees: number = proportion
@@ -264,7 +273,7 @@ const ProjectTimer = (): JSX.Element => {
     );
   }
 
-  if (!isActive) {
+  if (!isTimerActive) {
     return <ProjectTimerForm />;
   } else {
     return (
@@ -290,19 +299,23 @@ const ProjectTimer = (): JSX.Element => {
               border: isSmallScreen ? "2px solid black" : "3px solid black",
             }}
           >
-            <div className={classes.stage}></div>
-            <div style={{ fontSize: isSmallScreen ? 16 : 24 }}>{timer}</div>
+            <div className={classes.cycles}>
+              {currentTimerCycle + " / " + totalTimerCycles}
+            </div>
+            <div style={{ fontSize: isSmallScreen ? 16 : 24 }}>
+              {timerAsDuration}
+            </div>
             <div
               className={classes.status}
               style={{ fontSize: isSmallScreen ? 12 : 16 }}
             >
-              {status}
+              {timerStatus}
             </div>
           </div>
         </div>
         <CurrencyButton
           text={"Give Up"}
-          currencyAmount={timerMinutes || 0}
+          currencyAmount={timerReward}
           onClick={() => stopTimerSession(ReasonTimerStopped.Canceled)}
           isCostly
         />

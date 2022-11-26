@@ -15,7 +15,8 @@ import { combineClassNames } from "../../utils";
 import classes from "./styles.module.css";
 
 const ToastOverlay = (): JSX.Element | null => {
-  const { message, displayTime, resetToast } = useContext(ToastContext);
+  const { toastMessage, toastDisplayTime, resetToast } =
+    useContext(ToastContext);
 
   const [isRising, setIsRising] = useState<boolean>(false);
 
@@ -23,14 +24,14 @@ const ToastOverlay = (): JSX.Element | null => {
     if (!isRising) {
       setTimeout(() => {
         setIsRising(true);
-      }, displayTime);
+      }, toastDisplayTime);
     } else {
       resetToast();
       setIsRising(false);
     }
   };
 
-  if (message) {
+  if (toastMessage) {
     return (
       <div
         className={combineClassNames(
@@ -39,7 +40,7 @@ const ToastOverlay = (): JSX.Element | null => {
         )}
         onAnimationEnd={onAnimationEnd}
       >
-        {message}
+        {toastMessage}
       </div>
     );
   }

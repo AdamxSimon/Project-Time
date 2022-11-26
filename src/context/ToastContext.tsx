@@ -1,22 +1,22 @@
 // React
 
-import { createContext, useRef, useState } from "react";
+import { createContext, useCallback, useMemo, useState } from "react";
 
 const DEFAULT_DISPLAY_TIME: number = 2000;
 
 interface ToastContextValue {
   showToast: (message: string, displayTime?: number) => void;
   resetToast: () => void;
-  message: string;
-  displayTime: number;
+  toastMessage: string;
+  toastDisplayTime: number;
 }
 
 export const ToastContext: React.Context<ToastContextValue> =
   createContext<ToastContextValue>({
     showToast: () => {},
     resetToast: () => {},
-    message: "",
-    displayTime: DEFAULT_DISPLAY_TIME,
+    toastMessage: "",
+    toastDisplayTime: DEFAULT_DISPLAY_TIME,
   });
 
 interface ToastProviderProps {
@@ -24,27 +24,31 @@ interface ToastProviderProps {
 }
 
 const ToastProvider = ({ children }: ToastProviderProps): JSX.Element => {
-  const [message, setMessage] = useState<string>("");
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [toastDisplayTime, setToastDisplayTime] =
+    useState<number>(DEFAULT_DISPLAY_TIME);
 
-  const displayTimeRef = useRef<number>(DEFAULT_DISPLAY_TIME);
-  const displayTime: number = displayTimeRef.current;
+  const showToast = useCallback(
+    (message: string, displayTime?: number): void => {
+      setToastDisplayTime(displayTime || DEFAULT_DISPLAY_TIME);
+      setToastMessage(message);
+    },
+    []
+  );
 
-  const showToast = (message: string, displayTime?: number): void => {
-    if (displayTime) displayTimeRef.current = displayTime;
-    setMessage(message);
-  };
+  const resetToast = useCallback((): void => {
+    setToastDisplayTime(DEFAULT_DISPLAY_TIME);
+    setToastMessage("");
+  }, []);
 
-  const resetToast = (): void => {
-    displayTimeRef.current = DEFAULT_DISPLAY_TIME;
-    setMessage("");
-  };
-
-  const value: ToastContextValue = {
-    showToast,
-    resetToast,
-    message,
-    displayTime,
-  };
+  const value: ToastContextValue = useMemo(() => {
+    return {
+      showToast,
+      resetToast,
+      toastMessage,
+      toastDisplayTime,
+    };
+  }, [showToast, resetToast, toastMessage, toastDisplayTime]);
 
   return (
     <ToastContext.Provider value={value}>{children}</ToastContext.Provider>

@@ -7,12 +7,13 @@ import {
   useContext,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 
 // Context
 
-import { ProjectContext, ProjectStatus } from "./ProjectContext";
 import { CurrencyContext } from "./CurrencyContext";
+import { ProjectContext, ProjectStatus } from "./ProjectContext";
 import { ToastContext } from "./ToastContext";
 
 // Utils
@@ -35,158 +36,223 @@ export enum ReasonTimerStopped {
 }
 
 interface TimerContextValue {
-  isActive: boolean;
-  timer: string;
-  status: TimerStatus;
+  isTimerActive: boolean;
+  timerAsDuration: string;
+  timerStatus: TimerStatus;
+  totalTimerCycles: number;
+  currentTimerCycle: number;
   startTimerSession: (
     activeMinutes: number,
     breakMinutes: number,
     cycles: number,
     project: Project
   ) => void;
-  stopTimerSession: (reason: ReasonTimerStopped) => void;
+  stopTimerSession: (reason: ReasonTimerStopped, reward?: number) => void;
   timedProject: Project | null;
-  timerMinutes: number | null;
+  timerReward: number;
 }
 
 export const TimerContext: React.Context<TimerContextValue> =
-  createContext<TimerContextValue>({} as TimerContextValue);
+  createContext<TimerContextValue>({
+    isTimerActive: false,
+    timerAsDuration: "00:00:00",
+    timerStatus: TimerStatus.Inactive,
+    totalTimerCycles: 0,
+    currentTimerCycle: 0,
+    startTimerSession: () => {},
+    stopTimerSession: () => {},
+    timedProject: null,
+    timerReward: 0,
+  });
 
 interface TimerProviderProps {
   children: JSX.Element;
 }
 
 const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [timer, setTimer] = useState<string>("00:00:00");
-  const [status, setStatus] = useState<TimerStatus>(TimerStatus.Inactive);
+  const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+  const [timerAsDuration, setTimerAsDuration] = useState<string>("00:00:00");
+  const [timerStatus, setTimerStatus] = useState<TimerStatus>(
+    TimerStatus.Inactive
+  );
+  const [totalTimerCycles, setTotalTimerCycles] = useState<number>(0);
+  const [currentTimerCycle, setCurrentTimerCycle] = useState<number>(0);
   const [timedProject, setTimedProject] = useState<Project | null>(null);
-  const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
+  const [timerReward, setTimerReward] = useState<number>(0);
 
   const stagesRef = useRef<{ (): void }[]>([]);
-  const stagesStepRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const intervalRef = useRef({} as NodeJS.Timer);
   const projectTimeRef = useRef<number | null>(null);
-  const rewardAmountRef = useRef<number>(0);
 
-  const { projects, updateProjectSeconds } = useContext(ProjectContext);
   const { addCurrency } = useContext(CurrencyContext);
+  const { projects, updateProjectSeconds } = useContext(ProjectContext);
   const { showToast } = useContext(ToastContext);
 
-  const startTimer = (
-    minutes: number,
-    status: TimerStatus,
-    project: Project
-  ): void => {
-    setStatus(status);
-    setTimer(convertSecondsToDuration(minutes * 60));
-    startTimeRef.current = Date.now();
-    if (!projectTimeRef.current) {
-      projectTimeRef.current = project.totalSecondsSpent;
-    }
-    clearInterval(intervalRef.current);
-
-    const interval: NodeJS.Timer = setInterval(() => {
-      const currentTime: number = Date.now();
-      const startTime: number = startTimeRef.current as number;
-      const differenceInSeconds: number = Math.round(
-        Math.abs(currentTime - startTime) / 1000
-      );
-
-      const timeLeftInSeconds: number = minutes * 60 - differenceInSeconds;
-      const timer = convertSecondsToDuration(timeLeftInSeconds);
-      setTimer(timer);
-
-      if (status === TimerStatus.Active && timeLeftInSeconds >= 0) {
-        updateProjectSeconds(
-          project,
-          (projectTimeRef.current as number) + differenceInSeconds
-        );
-      }
-
-      if (timeLeftInSeconds < 0 && stagesStepRef.current !== null) {
-        if (projectTimeRef.current && status === TimerStatus.Active) {
-          projectTimeRef.current += minutes * 60;
-        }
-        stagesStepRef.current += 1;
-        if (stagesStepRef.current <= stagesRef.current.length - 1) {
-          stagesRef.current[stagesStepRef.current]();
-        } else {
-          stopTimerSession(ReasonTimerStopped.Completed);
-        }
-      }
-    }, 1000);
-
-    intervalRef.current = interval;
-  };
-
   const stopTimerSession = useCallback(
-    (reason: ReasonTimerStopped): void => {
-      setIsActive(false);
+    (reason: ReasonTimerStopped, reward?: number): void => {
+      setIsTimerActive(false);
+      setTimerAsDuration("00:00:00");
+      setTimerStatus(TimerStatus.Inactive);
+      setTotalTimerCycles(0);
+      setCurrentTimerCycle(0);
       setTimedProject(null);
-      setStatus(TimerStatus.Inactive);
-      setTimer("00:00:00");
+      setTimerReward(0);
+
       clearInterval(intervalRef.current);
+
       startTimeRef.current = null;
-      stagesRef.current = [];
-      stagesStepRef.current = null;
       projectTimeRef.current = null;
+      stagesRef.current = [];
 
       if (reason === ReasonTimerStopped.Completed) {
-        addCurrency(rewardAmountRef.current);
         showToast("Timer Completed!");
+        addCurrency(reward || 0);
       }
-
-      rewardAmountRef.current = 0;
-      setTimerMinutes(null);
     },
     [addCurrency, showToast]
   );
 
-  const startTimerSession = (
-    activeMinutes: number,
-    breakMinutes: number,
-    cycles: number,
-    project: Project
-  ): void => {
-    setIsActive(true);
-    setTimedProject(project);
-    setTimerMinutes((activeMinutes + breakMinutes) * cycles - breakMinutes);
-    rewardAmountRef.current =
-      (activeMinutes + breakMinutes) * cycles - breakMinutes;
-    const stages: { (): void }[] = [];
-    for (let counter = 0; counter < cycles; counter++) {
-      stages.push(() => startTimer(activeMinutes, TimerStatus.Active, project));
-      if (!(counter === cycles - 1)) {
-        stages.push(() => startTimer(breakMinutes, TimerStatus.Break, project));
+  const startTimer = useCallback(
+    (
+      minutes: number,
+      status: TimerStatus,
+      cycle: number,
+      step: number,
+      reward: number,
+      project: Project
+    ): void => {
+      setTimerStatus(status);
+      setCurrentTimerCycle(cycle);
+      setTimerAsDuration(convertSecondsToDuration(minutes * 60));
+      startTimeRef.current = Date.now();
+      if (projectTimeRef.current === null) {
+        projectTimeRef.current = project.totalSecondsSpent;
       }
+      clearInterval(intervalRef.current);
+      showToast(
+        status === TimerStatus.Active ? "Time To Work!" : "Break Time!"
+      );
+
+      const interval: NodeJS.Timer = setInterval(() => {
+        const currentTime: number = Date.now();
+        const startTime: number = startTimeRef.current ?? Date.now();
+        const differenceInSeconds: number = Math.round(
+          Math.abs(currentTime - startTime) / 1000
+        );
+
+        const timeLeftInSeconds: number = minutes * 60 - differenceInSeconds;
+        const timer: string = convertSecondsToDuration(timeLeftInSeconds);
+        setTimerAsDuration(timer);
+
+        if (
+          status === TimerStatus.Active &&
+          timeLeftInSeconds >= 0 &&
+          projectTimeRef.current !== null
+        ) {
+          updateProjectSeconds(
+            project,
+            projectTimeRef.current + differenceInSeconds
+          );
+        }
+
+        if (timeLeftInSeconds < 0) {
+          if (projectTimeRef.current && status === TimerStatus.Active) {
+            projectTimeRef.current += minutes * 60;
+          }
+          if (step + 1 < stagesRef.current.length) {
+            stagesRef.current[step + 1]();
+          } else {
+            stopTimerSession(ReasonTimerStopped.Completed, reward);
+          }
+        }
+      }, 1000);
+
+      intervalRef.current = interval;
+    },
+    [showToast, stopTimerSession, updateProjectSeconds]
+  );
+
+  const startTimerSession = useCallback(
+    (
+      activeMinutes: number,
+      breakMinutes: number,
+      cycles: number,
+      project: Project
+    ): void => {
+      setIsTimerActive(true);
+      setTotalTimerCycles(cycles);
+      setTimedProject(project);
+      const reward: number = activeMinutes * cycles;
+      setTimerReward(reward);
+      const stages: { (): void }[] = [];
+      for (let cycle = 1, step = 0; cycle <= cycles; cycle++, step += 2) {
+        stages.push(() =>
+          startTimer(
+            activeMinutes,
+            TimerStatus.Active,
+            cycle,
+            step,
+            reward,
+            project
+          )
+        );
+        const isLastCycle: boolean = cycle === cycles;
+        if (!isLastCycle) {
+          stages.push(() =>
+            startTimer(
+              breakMinutes,
+              TimerStatus.Break,
+              cycle,
+              step + 1,
+              reward,
+              project
+            )
+          );
+        }
+      }
+      stagesRef.current = stages;
+      stagesRef.current[0]();
+    },
+    [startTimer]
+  );
+
+  useEffect((): void => {
+    if (timedProject) {
+      projects.forEach((project) => {
+        if (
+          project.id === timedProject.id &&
+          project.status !== ProjectStatus.Active
+        ) {
+          stopTimerSession(ReasonTimerStopped.Canceled);
+        }
+      });
     }
-    stagesRef.current = stages;
-    stagesStepRef.current = 0;
-    stagesRef.current[stagesStepRef.current]();
-  };
+  }, [projects, timedProject, stopTimerSession]);
 
-  useEffect(() => {
-    projects.forEach((project) => {
-      if (
-        project.id === timedProject?.id &&
-        project.status !== ProjectStatus.Active
-      ) {
-        stopTimerSession(ReasonTimerStopped.Canceled);
-      }
-    });
-  }, [projects, stopTimerSession, timedProject?.id]);
-
-  const value: TimerContextValue = {
-    isActive,
-    timer,
-    status,
+  const value: TimerContextValue = useMemo(() => {
+    return {
+      isTimerActive,
+      timerAsDuration,
+      timerStatus,
+      totalTimerCycles,
+      currentTimerCycle,
+      startTimerSession,
+      stopTimerSession,
+      timedProject,
+      timerReward,
+    };
+  }, [
+    isTimerActive,
+    timerAsDuration,
+    timerStatus,
+    totalTimerCycles,
+    currentTimerCycle,
     startTimerSession,
     stopTimerSession,
     timedProject,
-    timerMinutes,
-  };
+    timerReward,
+  ]);
 
   return (
     <TimerContext.Provider value={value}>{children}</TimerContext.Provider>
