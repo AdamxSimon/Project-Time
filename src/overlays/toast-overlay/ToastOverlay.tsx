@@ -1,6 +1,6 @@
 // React
 
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 // Context
 
@@ -20,7 +20,7 @@ const ToastOverlay = (): JSX.Element | null => {
 
   const [isRising, setIsRising] = useState<boolean>(false);
 
-  const onAnimationEnd = (): void => {
+  const onAnimationEnd = useCallback((): void => {
     if (!isRising) {
       setTimeout(() => {
         setIsRising(true);
@@ -29,7 +29,7 @@ const ToastOverlay = (): JSX.Element | null => {
       resetToast();
       setIsRising(false);
     }
-  };
+  }, [isRising, toastDisplayTime, resetToast]);
 
   if (toastMessage) {
     return (
