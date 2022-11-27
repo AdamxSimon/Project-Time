@@ -1,0 +1,56 @@
+.projectSelector {
+  min-height: 40px;
+  width: 100%;
+  max-width: 240px;
+  padding: 8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.projectName {
+  margin: 0 24px;
+  flex: 1;
+  text-align: center;
+}
+
+.arrow {
+  position: absolute;
+  right: 8px;
+  user-select: none;
+}
+
+.projectList {
+  height: 140px;
+  background-color: white;
+  border: 1px solid black;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.projectList::-webkit-scrollbar {
+  display: none;
+}
+
+.projectItem {
+  width: 100%;
+  padding: 8px;
+  text-align: center;
+}
+
+.projectItem:hover {
+  background-color: lavender;
+}

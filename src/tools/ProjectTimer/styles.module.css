@@ -9,73 +9,6 @@
   gap: 16px;
 }
 
-.header {
-  width: 100%;
-  padding-bottom: 8px;
-  border-bottom: 1px solid black;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.settings {
-  width: 100%;
-  max-width: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.inputGroup {
-  height: 32px;
-  width: 100%;
-  border-bottom: 1px solid black;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.label {
-  font-weight: bold;
-}
-
-.input {
-  width: 36px;
-  background-color: lavender;
-  padding: 0;
-  outline: 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  text-align: center;
-}
-
-.input:hover {
-  font-weight: bold;
-}
-
-.input::-webkit-outer-spin-button,
-.input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-.totalTimeGroup {
-  height: 32px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.totalTime {
-  flex: 1;
-  text-align: right;
-}
-
 .timerContainer {
   width: fit-content;
   display: flex;
@@ -111,12 +44,10 @@
   right: 50%;
   bottom: 50%;
   transform: translate(-50%, -50%);
+  gap: 4px;
 }
 
-.cycles {
-  text-align: center;
-}
-
+.cycles,
 .status {
   text-align: center;
 }
@@ -129,74 +60,6 @@
   font-size: 24px;
   font-weight: bold;
   text-align: center;
-}
-
-.projectTimerForm {
-  width: 100%;
-  padding: 8px;
-  margin: auto;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.projectSelector {
-  min-height: 40px;
-  width: 100%;
-  max-width: 240px;
-  padding: 8px;
-  border: 1px solid black;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  position: relative;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-}
-
-.projectName {
-  margin: 0 24px;
-  flex: 1;
-  text-align: center;
-}
-
-.arrow {
-  position: absolute;
-  right: 8px;
-  user-select: none;
-}
-
-.projectList {
-  height: 140px;
-  background-color: white;
-  border: 1px solid black;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  left: -1px;
-  right: -1px;
-  overflow: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.projectList::-webkit-scrollbar {
-  display: none;
-}
-
-.projectItem {
-  width: 100%;
-  padding: 8px;
-  text-align: center;
-}
-
-.projectItem:hover {
-  background-color: lavender;
 }
 
 .startProjectTimerButton {

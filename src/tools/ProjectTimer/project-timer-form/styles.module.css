@@ -1,0 +1,75 @@
+.projectTimerForm {
+  width: 100%;
+  padding: 8px;
+  margin: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.header {
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.settings {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputGroup {
+  height: 32px;
+  width: 100%;
+  border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.input {
+  width: 36px;
+  background-color: lavender;
+  padding: 0;
+  outline: 0;
+  border: none;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.input:hover {
+  font-weight: bold;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.totalTimeGroup {
+  height: 32px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.totalTime {
+  flex: 1;
+  text-align: right;
+}
