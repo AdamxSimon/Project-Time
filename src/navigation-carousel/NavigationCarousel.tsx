@@ -1,6 +1,6 @@
 // React
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // Components
 
@@ -43,23 +43,31 @@ const NavigationCarousel = (): JSX.Element => {
     carouselItems[0]
   );
 
+  const isItemSelected = useCallback(
+    (item: CarouselItem): boolean => {
+      return item.id === selectedItem.id;
+    },
+    [selectedItem]
+  );
+
   return (
     <div className={classes.navigationCarouselContainer}>
       <div className={classes.navigationCarousel}>
         <div className={classes.carouselComponentContainer}>
           {selectedItem.component}
         </div>
+
         <div className={classes.navigationButtonsContainer}>
           {carouselItems.map((item) => {
             return (
               <div
                 key={item.id}
                 className={classes.navigationButton}
-                style={
-                  item.id === selectedItem.id
-                    ? { backgroundColor: "lightgreen" }
-                    : undefined
-                }
+                style={{
+                  backgroundColor: isItemSelected(item)
+                    ? "lightgreen"
+                    : "white",
+                }}
                 onClick={() => setSelectedItem(item)}
               >
                 <img src={item.icon} alt={item.altText} height={16} />
