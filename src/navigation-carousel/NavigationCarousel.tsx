@@ -63,11 +63,13 @@ const NavigationCarousel = (): JSX.Element => {
               <div
                 key={item.id}
                 className={classes.navigationButton}
-                style={{
-                  backgroundColor: isItemSelected(item)
-                    ? "lightgreen"
-                    : "white",
-                }}
+                style={
+                  isItemSelected(item)
+                    ? {
+                        backgroundColor: "lightgreen",
+                      }
+                    : undefined
+                }
                 onClick={() => setSelectedItem(item)}
               >
                 <img src={item.icon} alt={item.altText} height={16} />

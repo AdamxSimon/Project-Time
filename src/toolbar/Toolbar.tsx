@@ -7,6 +7,7 @@ import { useCallback, useContext, useMemo, useRef } from "react";
 import { CurrencyContext } from "../context/CurrencyContext";
 import { ProjectContext } from "../context/ProjectContext";
 import { ScreenSizeContext } from "../context/ScreenSizeContext";
+import { ThemesContext } from "../context/ThemesContext";
 import { TimerContext } from "../context/TimerContext";
 
 // Assets
@@ -30,6 +31,7 @@ const Toolbar = (): JSX.Element => {
   const { activeProjects, projectsDataRef, uploadProjectData, maxProjects } =
     useContext(ProjectContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
+  const { fonts } = useContext(ThemesContext);
   const { timerAsDuration } = useContext(TimerContext);
 
   const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
@@ -82,13 +84,18 @@ const Toolbar = (): JSX.Element => {
         <div className={classes.settingsContainer}>
           <a
             className={classes.settingsButton}
+            style={fonts.standard}
             href={projectsDataRef}
             download={"projects.json"}
           >
             {"Save"}
           </a>
 
-          <div className={classes.settingsButton} onClick={handleUpload}>
+          <div
+            className={classes.settingsButton}
+            style={fonts.standard}
+            onClick={handleUpload}
+          >
             {"Upload"}
           </div>
 

@@ -25,6 +25,9 @@ const ThemesProvider = ({ children }: ThemesProviderProps): JSX.Element => {
       standard: {
         fontSize: isSmallScreen ? 12 : 16,
       },
+      header: {
+        fontSize: isSmallScreen ? 14 : 18,
+      },
     };
   }, [isSmallScreen]);
 

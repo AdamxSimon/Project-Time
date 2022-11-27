@@ -1,10 +1,10 @@
 // React
 
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
 // Context
 
-import { ScreenSizeContext } from "../../context/ScreenSizeContext";
+import { ThemesContext } from "../../context/ThemesContext";
 
 // Assets
 
@@ -33,9 +33,11 @@ const CurrencyButton = (props: CurrencyButtonProps): JSX.Element => {
 
   const [isActive, setIsActive] = useState<boolean>(false);
 
-  const { isSmallScreen } = useContext(ScreenSizeContext);
+  const { fonts } = useContext(ThemesContext);
 
-  const fontSize: number = isSmallScreen ? 12 : 16;
+  const fontSize: number = useMemo(() => {
+    return Number(fonts.standard.fontSize);
+  }, [fonts]);
 
   return (
     <div
