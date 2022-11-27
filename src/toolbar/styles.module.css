@@ -15,21 +15,14 @@
   gap: 16px;
 }
 
-.infoContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-}
-
 .settingsContainer {
   display: flex;
   gap: 4px;
 }
 
 .settingsButton {
-  padding: 8px;
   background-color: lightgray;
+  padding: 8px;
   border-radius: 8px;
   display: flex;
   justify-content: center;

@@ -1,13 +1,13 @@
 // React
 
-import { useContext, useRef } from "react";
+import { useCallback, useContext, useMemo, useRef } from "react";
 
 // Context
 
 import { CurrencyContext } from "../context/CurrencyContext";
-import { ProjectContext, ProjectStatus } from "../context/ProjectContext";
-import { TimerContext } from "../context/TimerContext";
+import { ProjectContext } from "../context/ProjectContext";
 import { ScreenSizeContext } from "../context/ScreenSizeContext";
+import { TimerContext } from "../context/TimerContext";
 
 // Assets
 
@@ -15,28 +15,50 @@ import CoinPNG from "../assets/currency/coin.png";
 import ProjectPNG from "../assets/projects/projects-sheet.png";
 import TimerPNG from "../assets/timer/timer.png";
 
+// Types
+
+import InfoContainer, {
+  InfoContainerProps,
+} from "./info-container/InfoContainer";
+
 // Styles
 
 import classes from "./styles.module.css";
 
 const Toolbar = (): JSX.Element => {
   const { currency } = useContext(CurrencyContext);
-  const { projects, projectsDataRef, uploadProjectData, maxProjects } =
+  const { activeProjects, projectsDataRef, uploadProjectData, maxProjects } =
     useContext(ProjectContext);
-  const { timerAsDuration } = useContext(TimerContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
+  const { timerAsDuration } = useContext(TimerContext);
 
   const uploadProjectsRef = useRef<HTMLInputElement | null>(null);
 
-  const activeProjects = projects.filter((project) => {
-    return project.status === ProjectStatus.Active;
-  });
+  const infoContainers: InfoContainerProps[] = useMemo(() => {
+    return [
+      {
+        icon: ProjectPNG,
+        altText: "Projects",
+        info: `${activeProjects.length} / ${maxProjects}`,
+      },
+      {
+        icon: CoinPNG,
+        altText: "Currency",
+        info: currency.toString(),
+      },
+      {
+        icon: TimerPNG,
+        altText: "Timer",
+        info: timerAsDuration,
+      },
+    ];
+  }, [activeProjects, currency, maxProjects, timerAsDuration]);
 
-  const handleUpload = (): void => {
+  const handleUpload = useCallback((): void => {
     if (uploadProjectsRef.current) {
       uploadProjectsRef.current.click();
     }
-  };
+  }, []);
 
   return (
     <div
@@ -44,30 +66,16 @@ const Toolbar = (): JSX.Element => {
       style={{ justifyContent: isSmallScreen ? "center" : "space-between" }}
     >
       <div className={classes.infoContainers}>
-        <div className={classes.infoContainer}>
-          <img
-            src={ProjectPNG}
-            alt={"ProjectPNG"}
-            height={isSmallScreen ? 12 : 16}
-          />
-          <div
-            style={{ fontSize: isSmallScreen ? 12 : 16 }}
-          >{`${activeProjects.length} / ${maxProjects}`}</div>
-        </div>
-        <div className={classes.infoContainer}>
-          <img src={CoinPNG} alt={"CoinPNG"} height={isSmallScreen ? 12 : 16} />
-          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>{currency}</div>
-        </div>
-        <div className={classes.infoContainer}>
-          <img
-            src={TimerPNG}
-            alt={"TimerPNG"}
-            height={isSmallScreen ? 12 : 16}
-          />
-          <div style={{ fontSize: isSmallScreen ? 12 : 16 }}>
-            {timerAsDuration}
-          </div>
-        </div>
+        {infoContainers.map((infoContainer) => {
+          return (
+            <InfoContainer
+              key={infoContainer.altText}
+              icon={infoContainer.icon}
+              altText={infoContainer.altText}
+              info={infoContainer.info}
+            />
+          );
+        })}
       </div>
 
       {!isSmallScreen && (
