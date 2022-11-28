@@ -1,6 +1,6 @@
 .inputForm {
   width: 100%;
-  padding: 8px 48px;
+  padding: 8px 40px;
   margin: auto;
   display: flex;
   flex: 1;
@@ -9,7 +9,6 @@
 }
 
 .inputHeader {
-  font-size: 24px;
   font-weight: bold;
   text-align: center;
 }
@@ -17,12 +16,10 @@
 .input {
   max-width: 100%;
   margin: 16px 0px;
-  font-size: 24px;
   padding: 8px;
   border: none;
   border-bottom: 2px solid lightgray;
   text-align: center;
-  transition: all 0.5s linear;
 }
 
 .input::placeholder {

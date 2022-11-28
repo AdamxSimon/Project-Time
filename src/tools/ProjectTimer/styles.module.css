@@ -34,8 +34,8 @@
   height: fit-content;
   width: fit-content;
   background-color: white;
-  padding: 8px;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 50%;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -53,6 +53,7 @@
 }
 
 .message {
+  max-width: 300px;
   background-color: rgba(255, 0, 0, 0.4);
   padding: 8px;
   border-radius: 8px;
@@ -70,4 +71,11 @@
 .resetTimerButton {
   display: flex;
   gap: 12px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  cursor: pointer;
 }

@@ -17,22 +17,25 @@ import CloseButtonPNG from "../../../assets/general/close-button.png";
 // Styles
 
 import classes from "./styles.module.css";
+import { ThemesContext } from "../../../context/ThemesContext";
 
 const ProjectInputForm = (): JSX.Element => {
   const { projects, activeProjects, addProject, setIsAddingProject } =
     useContext(ProjectContext);
+  const { fonts } = useContext(ThemesContext);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className={classes.inputForm}>
-      <div className={classes.inputHeader}>
+      <div className={classes.inputHeader} style={fonts.header}>
         {"What Would You Like To Work On?"}
       </div>
 
       <input
         ref={inputRef}
         className={classes.input}
+        style={fonts.standard}
         type={"text"}
         placeholder={"Project Name"}
       />
@@ -55,7 +58,7 @@ const ProjectInputForm = (): JSX.Element => {
           className={classes.closeButton}
           src={CloseButtonPNG}
           alt={"Close"}
-          height={20}
+          height={fonts.standard.fontSize}
           onClick={() => setIsAddingProject(false)}
         />
       )}

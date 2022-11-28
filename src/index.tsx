@@ -5,6 +5,9 @@ import ReactDOM from "react-dom/client";
 // Components
 
 import App from "./App";
+
+// Providers
+
 import CurrencyProvider from "./context/CurrencyContext";
 import ProjectProvider from "./context/ProjectContext";
 import ScreenSizeProvider from "./context/ScreenSizeContext";

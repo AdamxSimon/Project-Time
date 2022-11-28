@@ -15,6 +15,10 @@ import Toolbar from "./toolbar/Toolbar";
 
 import ToastOverlay from "./overlays/toast-overlay/ToastOverlay";
 
+// Assets
+
+import ProjectsSheetPNG from "./assets/projects/projects-sheet.png";
+
 // Styles
 
 import classes from "./styles.module.css";
@@ -26,13 +30,12 @@ const App = (): JSX.Element => {
     <div className={classes.app}>
       <Toolbar />
       <NavigationCarousel />
-
-      {/* Overlays */}
-
       <ToastOverlay />
 
       {isScreenUnsupported && (
-        <div className={classes.unsupported}>{"Screen Size Unsupported"}</div>
+        <div className={classes.unsupported}>
+          <img src={ProjectsSheetPNG} alt={"Project Time"} height={20} />
+        </div>
       )}
     </div>
   );

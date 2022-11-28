@@ -11,11 +11,11 @@ import { ThemesContext } from "../../context/ThemesContext";
 
 // Components
 
-import CurrencyButton from "../../components/currency-button/CurrencyButton";
 import ProjectTimerForm from "./project-timer-form/ProjectTimerForm";
 
 // Assets
 
+import CloseButtonPNG from "../../assets/general/close-button.png";
 import EmptyTimerPNG from "../../assets/timer/empty-timer.png";
 import TimerTickerPNG from "../../assets/timer/timer-ticker.png";
 
@@ -36,7 +36,6 @@ const ProjectTimer = (): JSX.Element => {
     totalTimerCycles,
     currentTimerCycle,
     stopTimerSession,
-    timerReward,
   } = useContext(TimerContext);
   const { activeProjects } = useContext(ProjectContext);
   const { isSmallScreen } = useContext(ScreenSizeContext);
@@ -102,11 +101,13 @@ const ProjectTimer = (): JSX.Element => {
             </div>
           </div>
         </div>
-        <CurrencyButton
-          text={"Give Up"}
-          currencyAmount={timerReward}
+
+        <img
+          className={classes.closeButton}
+          src={CloseButtonPNG}
+          alt={"Close"}
+          height={fonts.standard.fontSize}
           onClick={() => stopTimerSession(ReasonTimerStopped.Canceled)}
-          isCostly
         />
       </div>
     );

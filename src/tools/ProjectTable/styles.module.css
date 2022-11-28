@@ -8,3 +8,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.projectTable::-webkit-scrollbar {
+  display: none;
+}
