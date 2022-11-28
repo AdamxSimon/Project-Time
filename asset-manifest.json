@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/Project-Time/static/css/main.0053755e.css",
+    "main.js": "/Project-Time/static/js/main.af0d2f35.js",
+    "static/media/empty-timer.png": "/Project-Time/static/media/empty-timer.f2ca906b316b0c822760.png",
+    "static/media/projects-sheet.png": "/Project-Time/static/media/projects-sheet.ddc7cdcb51a82a0f23ee.png",
+    "static/media/timer.png": "/Project-Time/static/media/timer.07de58977805573323a7.png",
+    "static/media/coin.png": "/Project-Time/static/media/coin.5c7a7ba8423a4a661154.png",
+    "static/media/checkmark.png": "/Project-Time/static/media/checkmark.d692184b48f938ee2d7b.png",
+    "static/media/pencil.png": "/Project-Time/static/media/pencil.35240394a376be292b0b.png",
+    "static/media/sigma.png": "/Project-Time/static/media/sigma.080c5a33960c5ca6eafd.png",
+    "static/media/dropdown-arrow.png": "/Project-Time/static/media/dropdown-arrow.28c323f67f8d7c8f1958.png",
+    "static/media/timer-ticker.png": "/Project-Time/static/media/timer-ticker.d6e4909c5e4c76e55354.png",
+    "index.html": "/Project-Time/index.html",
+    "main.0053755e.css.map": "/Project-Time/static/css/main.0053755e.css.map",
+    "main.af0d2f35.js.map": "/Project-Time/static/js/main.af0d2f35.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0053755e.css",
+    "static/js/main.af0d2f35.js"
+  ]
+}
