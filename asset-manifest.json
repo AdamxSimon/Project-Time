@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/Project-Time/static/css/main.0053755e.css",
+    "main.css": "/Project-Time/static/css/main.d6f6fb31.css",
     "main.js": "/Project-Time/static/js/main.af0d2f35.js",
     "static/media/empty-timer.png": "/Project-Time/static/media/empty-timer.f2ca906b316b0c822760.png",
     "static/media/projects-sheet.png": "/Project-Time/static/media/projects-sheet.ddc7cdcb51a82a0f23ee.png",
@@ -12,11 +12,11 @@
     "static/media/dropdown-arrow.png": "/Project-Time/static/media/dropdown-arrow.28c323f67f8d7c8f1958.png",
     "static/media/timer-ticker.png": "/Project-Time/static/media/timer-ticker.d6e4909c5e4c76e55354.png",
     "index.html": "/Project-Time/index.html",
-    "main.0053755e.css.map": "/Project-Time/static/css/main.0053755e.css.map",
+    "main.d6f6fb31.css.map": "/Project-Time/static/css/main.d6f6fb31.css.map",
     "main.af0d2f35.js.map": "/Project-Time/static/js/main.af0d2f35.js.map"
   },
   "entrypoints": [
-    "static/css/main.0053755e.css",
+    "static/css/main.d6f6fb31.css",
     "static/js/main.af0d2f35.js"
   ]
 }
