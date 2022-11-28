@@ -157,7 +157,10 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
         }
 
         if (timeLeftInSeconds < 0) {
-          if (projectTimeRef.current && status === TimerStatus.Active) {
+          if (
+            projectTimeRef.current !== null &&
+            status === TimerStatus.Active
+          ) {
             projectTimeRef.current += minutes * 60;
           }
           if (step + 1 < stagesRef.current.length) {

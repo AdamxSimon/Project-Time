@@ -1,6 +1,6 @@
 // React
 
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 
 // Context
 
@@ -45,6 +45,12 @@ const ProjectTable = (): JSX.Element => {
   const areProjectSlotsFull: boolean = useMemo(() => {
     return activeProjects.length === maxProjects;
   }, [activeProjects, maxProjects]);
+
+  useEffect(() => {
+    return () => {
+      setIsAddingProject(false);
+    };
+  }, []);
 
   if (isAddingProject) {
     return <ProjectInputForm />;

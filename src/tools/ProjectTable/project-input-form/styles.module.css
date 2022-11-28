@@ -19,6 +19,7 @@
   padding: 8px;
   border: none;
   border-bottom: 2px solid lightgray;
+  border-radius: 0;
   text-align: center;
 }
 

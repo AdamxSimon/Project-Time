@@ -13,3 +13,7 @@ body,
 body {
   margin: 0;
 }
+
+input {
+  -webkit-user-select: text;
+}

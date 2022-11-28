@@ -81,4 +81,8 @@
     border-radius: 0;
     box-shadow: none;
   }
+
+  .navigationButton:active {
+    box-shadow: none;
+  }
 }
