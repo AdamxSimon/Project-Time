@@ -20,9 +20,19 @@ import { ToastContext } from "./ToastContext";
 
 import { convertSecondsToDuration } from "../utils";
 
+// Assets
+
+import BackToWorkMP3 from "../assets/audio/back-to-work.mp3";
+import BreakTimeMP3 from "../assets/audio/break-time.mp3";
+import TimerCompleteMP3 from "../assets/audio/timer-complete.mp3";
+
 // Types
 
 import { Project } from "../types";
+
+const BackToWorkAudio = new Audio(BackToWorkMP3);
+const BreakTimeAudio = new Audio(BreakTimeMP3);
+const TimerCompleteAudio = new Audio(TimerCompleteMP3);
 
 enum TimerStatus {
   Active = "Active",
@@ -107,6 +117,7 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
 
       if (reason === ReasonTimerStopped.Completed) {
         showToast("Timer Completed!");
+        TimerCompleteAudio.play();
         addCurrency(reward || 0);
       }
     },
@@ -133,6 +144,12 @@ const TimerProvider = ({ children }: TimerProviderProps): JSX.Element => {
       showToast(
         status === TimerStatus.Active ? "Time To Work!" : "Break Time!"
       );
+
+      if (status === TimerStatus.Active) {
+        BackToWorkAudio.play();
+      } else {
+        BreakTimeAudio.play();
+      }
 
       const interval: NodeJS.Timer = setInterval(() => {
         const currentTime: number = Date.now();
