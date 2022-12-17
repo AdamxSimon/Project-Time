@@ -1,7 +1,10 @@
 {
   "files": {
     "main.css": "/Project-Time/static/css/main.d6f6fb31.css",
-    "main.js": "/Project-Time/static/js/main.0544398d.js",
+    "main.js": "/Project-Time/static/js/main.adfc139d.js",
+    "static/media/break-time.mp3": "/Project-Time/static/media/break-time.939ed5598551c4976cd9.mp3",
+    "static/media/back-to-work.mp3": "/Project-Time/static/media/back-to-work.c11172e43253d9355ba9.mp3",
+    "static/media/timer-complete.mp3": "/Project-Time/static/media/timer-complete.4fb799f3d88ecc65f499.mp3",
     "static/media/empty-timer.png": "/Project-Time/static/media/empty-timer.f2ca906b316b0c822760.png",
     "static/media/projects-sheet.png": "/Project-Time/static/media/projects-sheet.ddc7cdcb51a82a0f23ee.png",
     "static/media/timer.png": "/Project-Time/static/media/timer.07de58977805573323a7.png",
@@ -13,10 +16,10 @@
     "static/media/timer-ticker.png": "/Project-Time/static/media/timer-ticker.d6e4909c5e4c76e55354.png",
     "index.html": "/Project-Time/index.html",
     "main.d6f6fb31.css.map": "/Project-Time/static/css/main.d6f6fb31.css.map",
-    "main.0544398d.js.map": "/Project-Time/static/js/main.0544398d.js.map"
+    "main.adfc139d.js.map": "/Project-Time/static/js/main.adfc139d.js.map"
   },
   "entrypoints": [
     "static/css/main.d6f6fb31.css",
-    "static/js/main.0544398d.js"
+    "static/js/main.adfc139d.js"
   ]
 }
